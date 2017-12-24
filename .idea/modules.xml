@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/ee-all/ee-all.iml" filepath="$PROJECT_DIR$/ee-all/ee-all.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ee-annotations/ee-annotations.iml" filepath="$PROJECT_DIR$/ee-annotations/ee-annotations.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ee-dispatchers/ee-dispatchers.iml" filepath="$PROJECT_DIR$/ee-dispatchers/ee-dispatchers.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ee-events/ee-events.iml" filepath="$PROJECT_DIR$/ee-events/ee-events.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ee-serializers/ee-serializers.iml" filepath="$PROJECT_DIR$/ee-serializers/ee-serializers.iml" />
+      <module fileurl="file://$PROJECT_DIR$/event-engine.iml" filepath="$PROJECT_DIR$/event-engine.iml" />
+    </modules>
+  </component>
+</project>

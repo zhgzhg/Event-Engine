@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="ee-dispatchers:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/ee_dispatchers_jar</output-path>
+    <root id="archive" name="ee-dispatchers.jar">
+      <element id="module-output" name="ee-dispatchers" />
+    </root>
+  </artifact>
+</component>

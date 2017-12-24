@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="ee-events:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/ee_events_jar</output-path>
+    <root id="archive" name="ee-events.jar">
+      <element id="module-output" name="ee-events" />
+    </root>
+  </artifact>
+</component>

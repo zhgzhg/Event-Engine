@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <groupId>com.github.zhgzhg</groupId>
+        <artifactId>event-engine</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <name>Event Engine's All Dependencies Aggregator</name>
+    <description>Contains all of the Event Engine's modules.</description>
+
+    <groupId>com.github.zhgzhg</groupId>
+    <artifactId>ee-all</artifactId>
+    <version>1.0-SNAPSHOT</version>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.github.zhgzhg</groupId>
+            <artifactId>ee-annotations</artifactId>
+            <version>${ee-annotations-version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.zhgzhg</groupId>
+            <artifactId>ee-events</artifactId>
+            <version>${ee-events-version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.zhgzhg</groupId>
+            <artifactId>ee-serializers</artifactId>
+            <version>${ee-serializers-version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.zhgzhg</groupId>
+            <artifactId>ee-dispatchers</artifactId>
+            <version>${ee-dispatchers-version}</version>
+            <scope>compile</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>${maven-jar-plugin-version}</version>
+                <configuration>
+                    <finalName>${project.parent.artifactId}-${project.version}</finalName>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>${maven-shade-plugin-version}</version>
+                <executions>
+                    <execution>
+                        <id>default</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <finalName>${project.parent.artifactId}-${project.version}</finalName>
+                            <shadedArtifactAttached>false</shadedArtifactAttached>
+                            <shadedClassifierName></shadedClassifierName>
+                            <artifactSet>
+                                <includes>
+                                    <include>com.github.zhgzhg:ee-annotations</include>
+                                    <include>com.github.zhgzhg:ee-events</include>
+                                    <include>com.github.zhgzhg:ee-serializers</include>
+                                    <include>com.github.zhgzhg:ee-dispatchers</include>
+                                </includes>
+                            </artifactSet>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>shade-with-all-deps</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <finalName>${project.parent.artifactId}-${project.version}-with-deps</finalName>
+                            <shadedArtifactAttached>true</shadedArtifactAttached>
+                            <shadedClassifierName></shadedClassifierName>
+                        </configuration>
+                    </execution>
+
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-clean-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>clean-dummy-jars</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>clean</goal>
+                        </goals>
+                        <configuration>
+                            <excludeDefaultDirectories>true</excludeDefaultDirectories>
+                            <verbose>true</verbose>
+                            <filesets>
+                                <fileset>
+                                    <directory>${project.build.directory}</directory>
+                                    <followSymlinks>false</followSymlinks>
+                                    <includes>
+                                        <include>original-*.jar</include>
+                                        <include>ee-*.jar</include>
+                                    </includes>
+                                </fileset>
+                            </filesets>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

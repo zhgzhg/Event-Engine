@@ -1,0 +1,11 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="event-engine:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/event_engine_jar</output-path>
+    <root id="archive" name="EventEngine.jar">
+      <element id="module-output" name="ee-annotations" />
+      <element id="module-output" name="ee-dispatchers" />
+      <element id="module-output" name="ee-events" />
+      <element id="module-output" name="ee-serializers" />
+    </root>
+  </artifact>
+</component>

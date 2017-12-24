@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="ee-serializers:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/ee_serializers_jar</output-path>
+    <root id="archive" name="ee-serializers.jar">
+      <element id="module-output" name="ee-serializers" />
+    </root>
+  </artifact>
+</component>

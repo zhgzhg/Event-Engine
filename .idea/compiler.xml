@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <excludeFromCompile>
+      <file url="file://$PROJECT_DIR$/src/main/java/module-info.jav" />
+      <file url="file://$PROJECT_DIR$/ee-serializers/src/main/java/module-info.java" />
+      <file url="file://$PROJECT_DIR$/ee-dispatchers/src/main/java/module-info.java" />
+      <file url="file://$PROJECT_DIR$/ee-annotations/src/main/java/net/uniplovdiv/fmi/cs/vrs/event/annotations/module-info.java" />
+    </excludeFromCompile>
+    <annotationProcessing>
+      <profile default="true" name="Default">
+        <processorPath>
+          <entry name="$PROJECT_DIR$/event-annotations/src/net/uniplovdiv/fmi/cs/delc2/event/annotations/processors/EmbeddedParameterProcessor.java" />
+        </processorPath>
+      </profile>
+      <profile name="EventEngine-OnlyModulesDefiningEvents" enabled="true">
+        <module name="EventEngine" />
+      </profile>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="annotations" />
+        <module name="dispatchers" />
+        <module name="ee-all" />
+        <module name="ee-dispatchers" />
+        <module name="ee-events" />
+        <module name="ee-serializers" />
+        <module name="event-annotations" />
+        <module name="event-dispatchers" />
+        <module name="event-events" />
+        <module name="event-serializers" />
+        <module name="events" />
+        <module name="serializers" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel target="1.8">
+      <module name="ee-all" target="1.8" />
+      <module name="ee-annotations" target="1.8" />
+      <module name="ee-dispatchers" target="1.8" />
+      <module name="ee-events" target="1.8" />
+      <module name="ee-pom" target="1.5" />
+      <module name="ee-serializers" target="1.8" />
+      <module name="event-engine" target="1.5" />
+    </bytecodeTargetLevel>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_STRING" value="-Xlint:unchecked" />
+  </component>
+</project>
