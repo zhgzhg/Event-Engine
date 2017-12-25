@@ -5,7 +5,7 @@
     <parent>
         <groupId>com.github.zhgzhg</groupId>
         <artifactId>event-engine</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <version>0.1</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -15,19 +15,19 @@
 
     <groupId>com.github.zhgzhg</groupId>
     <artifactId>ee-serializers</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>0.1</version>
 
     <dependencies>
         <dependency>
             <groupId>com.github.zhgzhg</groupId>
             <artifactId>ee-annotations</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>${ee-annotations-version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.github.zhgzhg</groupId>
             <artifactId>ee-events</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>${ee-events-version}</version>
             <scope>compile</scope>
         </dependency>
 
