@@ -1,6 +1,8 @@
 Event Engine
 ============
 
+![build status badge](https://travis-ci.org/zhgzhg/Event-Engine.svg?branch=master "Build Status")
+
 An event engine developed for the Virtual Referent Space (VRS).
 
 
