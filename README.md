@@ -34,10 +34,10 @@ How to Compile
 Known Issues
 ------------
 
-The combined jar files of all project's modules are not recommended for production use.
-Instead use the individually generated jars instead!
+The combined jar files of all project's modules are not recommended for production use. Work with the individually
+generated jars instead!
  
 Pay attention to IntelliJ IDEA settings if execution of Maven through it is desired. Especially when changing JDK
 version during imports and runs. Sometimes JAVA_HOME might be mandatory to set.
 
-Event Engine relies on not modularized dependencies. Migrating to Java 9 may cause problems.
+Event Engine relies on not modularized yet dependencies. Migrating to Java 9 may cause problems.
