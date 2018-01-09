@@ -4,6 +4,7 @@ Event Engine
 ![build status badge](https://travis-ci.org/zhgzhg/Event-Engine.svg?branch=master "Build Status")
 
 An event engine developed for the Virtual Referent Space (VRS).
+The project is licensed under Apache License 2.0. You may find the terms in file named "LICENSE" in this directory.
 
 
 Requirements
