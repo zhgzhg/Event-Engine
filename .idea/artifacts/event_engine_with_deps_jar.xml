@@ -12,12 +12,12 @@
       <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/apache/kafka/kafka-clients/1.0.0/kafka-clients-1.0.0.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/lz4/lz4-java/1.4/lz4-java-1.4.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/xerial/snappy/snappy-java/1.1.4/snappy-java-1.1.4.jar" path-in-jar="/" />
-      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/io/github/lukehutch/fast-classpath-scanner/2.9.3/fast-classpath-scanner-2.9.3.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/apache/commons/commons-lang3/3.7/commons-lang3-3.7.jar" path-in-jar="/" />
       <element id="module-output" name="ee-annotations" />
       <element id="module-output" name="ee-dispatchers" />
       <element id="module-output" name="ee-serializers" />
       <element id="module-output" name="ee-events" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/io/github/lukehutch/fast-classpath-scanner/2.9.4/fast-classpath-scanner-2.9.4.jar" path-in-jar="/" />
     </root>
   </artifact>
 </component>
