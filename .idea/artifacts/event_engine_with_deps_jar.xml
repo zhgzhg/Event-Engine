@@ -17,7 +17,7 @@
       <element id="module-output" name="ee-dispatchers" />
       <element id="module-output" name="ee-serializers" />
       <element id="module-output" name="ee-events" />
-      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/io/github/lukehutch/fast-classpath-scanner/2.12.0/fast-classpath-scanner-2.12.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/io/github/lukehutch/fast-classpath-scanner/2.11.1/fast-classpath-scanner-2.11.1.jar" path-in-jar="/" />
     </root>
   </artifact>
 </component>
