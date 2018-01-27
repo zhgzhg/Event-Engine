@@ -266,7 +266,7 @@ public class EventTest {
         assertEquals(e, ue);
 
         b = ser(pcr);
-        ParametersComparisonResult upcr = (ParametersComparisonResult)pcr;
+        ParametersComparisonResult upcr = pcr;
         assertEquals(pcr, upcr);
 
         b = ser(pcot);
@@ -357,7 +357,7 @@ public class EventTest {
 
         e1.addSubEvent(se1);
 
-        ParametersContainer pc = ((Event) e1).getWithEmbeddedParameters();
+        ParametersContainer pc = e1.getWithEmbeddedParameters();
         pc = null;
 
         // $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
@@ -387,7 +387,7 @@ public class EventTest {
 
         ParametersContainer allParamsE1 = new ParametersContainer();
         ParametersContainer allParamsE2 = new ParametersContainer();
-        allParamsE1 = ((Event) e1).getWithEmbeddedParameters();
+        allParamsE1 = e1.getWithEmbeddedParameters();
         allParamsE2 = e2.getEmbeddedParameters();
 
         ParametersComparisonResult comparisonResult = Event.compareParameters(allParamsE1, allParamsE2);
@@ -460,11 +460,11 @@ public class EventTest {
     @Test
     void complexTest2() {
         ParametersContainer templateParameters = new ParametersContainer();
-        templateParameters.put("name", new String("Petko"));
+        templateParameters.put("name", "Petko");
         templateParameters.put("age", 25);
 
         ParametersContainer eventParameters = new ParametersContainer();
-        eventParameters.put("name", new String("Petko"));
+        eventParameters.put("name", "Petko");
         eventParameters.put("age", 26);
 
         ParametersComparisonResult result = Event.compareParameters(eventParameters, templateParameters);

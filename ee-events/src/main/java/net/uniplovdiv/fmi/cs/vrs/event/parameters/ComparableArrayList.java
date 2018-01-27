@@ -44,11 +44,7 @@ public abstract class ComparableArrayList<T /*extends Comparable<T>*/> extends A
             Class<?> typeParam = resolvedTypeParam.getErasedType();
             if (typeParam != null) {
                 //System.out.println("Caught something " + typeParam.getCanonicalName());
-                if (!typeParam.equals(Object.class)) {
-                    isGood = Comparable.class.isAssignableFrom(typeParam);
-                } else {
-                    isGood = true;
-                }
+                isGood = typeParam.equals(Object.class) || Comparable.class.isAssignableFrom(typeParam);
             }
         }
         if (!isGood) {

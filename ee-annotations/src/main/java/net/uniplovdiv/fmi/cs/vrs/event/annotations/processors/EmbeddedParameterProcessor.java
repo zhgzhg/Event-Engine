@@ -398,7 +398,7 @@ public class EmbeddedParameterProcessor extends AbstractProcessor {
                         boolean good = false;
                         if (val != null) {
                             try {
-                                good = ((Long)val).longValue() != 0;
+                                good = ((Long) val) != 0;
                             } catch (Exception ex) {
                                 good = false;
                             }

@@ -13,6 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class ClassesIEventScannerTest {
 
     private HashSet<Class<? extends IEvent>> foundEventClasses = new HashSet<Class<? extends IEvent>>() {
+        private static final long serialVersionUID = 938705210137734396L;
         {
             add(Event.class);
             add(DomainEvent.class);

@@ -314,10 +314,7 @@ public interface IEvent extends Comparable<IEvent> {
      */
     default boolean removeSubEvent(IEvent event) {
         IEventsContainer subEvents = getSubEvents();
-        if (subEvents != null) {
-            return subEvents.remove(event.getId(), event);
-        }
-        return true;
+        return subEvents == null || subEvents.remove(event.getId(), event);
     }
 
     /**
