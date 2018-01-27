@@ -13,7 +13,6 @@
     <name>Event Engine's All Dependencies Aggregator</name>
     <description>Contains all of the Event Engine's modules.</description>
 
-    <groupId>com.github.zhgzhg</groupId>
     <artifactId>ee-all</artifactId>
     <version>0.1</version>
 

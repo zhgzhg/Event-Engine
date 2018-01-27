@@ -13,7 +13,6 @@
     <name>Event Engine's Events</name>
     <description>Provides the classes required to create and work with VRS events while also defines some basic ones.</description>
 
-    <groupId>com.github.zhgzhg</groupId>
     <artifactId>ee-events</artifactId>
     <version>0.1</version>
 

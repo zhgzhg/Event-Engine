@@ -34,14 +34,13 @@
         <module name="serializers" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel target="1.8">
-      <module name="ee-all" target="1.8" />
-      <module name="ee-annotations" target="1.8" />
-      <module name="ee-dispatchers" target="1.8" />
-      <module name="ee-events" target="1.8" />
-      <module name="ee-pom" target="1.5" />
-      <module name="ee-serializers" target="1.8" />
-      <module name="event-engine" target="1.5" />
+    <bytecodeTargetLevel target="9">
+      <module name="ee-all" target="9" />
+      <module name="ee-annotations" target="9" />
+      <module name="ee-dispatchers" target="9" />
+      <module name="ee-events" target="9" />
+      <module name="ee-serializers" target="9" />
+      <module name="event-engine" target="9" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">

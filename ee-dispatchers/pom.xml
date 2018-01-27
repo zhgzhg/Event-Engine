@@ -13,7 +13,6 @@
     <name>Event Engine's Dispatchers</name>
     <description>Provides the dispatchers that can send and receive VRS events.</description>
 
-    <groupId>com.github.zhgzhg</groupId>
     <artifactId>ee-dispatchers</artifactId>
     <version>0.1</version>
 
