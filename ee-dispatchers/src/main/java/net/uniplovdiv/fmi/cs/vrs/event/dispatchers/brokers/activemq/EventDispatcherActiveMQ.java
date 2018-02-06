@@ -141,7 +141,7 @@ public class EventDispatcherActiveMQ extends AbstractEventDispatcher {
      *                                     channels.
      * @param doNotReceiveEventsFromSameSource Events sent from the same source as the current one will be totally
      *                                         ignored. Differentiation is made by the identifier set in the config and
-     *                                         the available meta information in the received Kafka records.
+     *                                         the available meta information in the received ActiveMQ records.
      *                                         This is a more strict limitation compared to latestEventsRememberCapacity
      *                                         since the last one is restricted to the limited amount of run-time data.
      * @param beRetroactive Tries to gather the oldest available possible data upon connect. Useful especially for
