@@ -1,7 +1,8 @@
 package net.uniplovdiv.fmi.cs.vrs.event.dispatchers.encapsulation;
 
 /**
- * The data serialization mechanism variants enumeration.
+ * Data encoding or decoding mechanism variants enumeration. Can be used to designate serialization or other kind of
+ * data transformation techniques.
  */
 public enum SerializationMechanism {
     /**
@@ -17,7 +18,12 @@ public enum SerializationMechanism {
     /**
      * JSON serialization mechanism indicator value.
      */
-    JSON((byte)2);
+    JSON((byte)2),
+
+    /**
+     * BASE32 serialization mechanism indicator value.
+     */
+    BASE32((byte)65);
 
     private final byte code;
 
