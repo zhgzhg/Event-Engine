@@ -628,7 +628,7 @@ public class JsonEventSerializer implements IEventSerializer {
 
     /**
      * Returns the encoding for String/byte data types used in this instance.
-     * @return A constant describind the encoding/decoding charset using during the de/serialization process.
+     * @return A constant describing the encoding/decoding charset using during the de/serialization process.
      */
     public final Charset getEncoding() {
         return this.encoding;
@@ -640,12 +640,14 @@ public class JsonEventSerializer implements IEventSerializer {
     }
 
     @Override
-    public byte[] serializePCO(IParameterComparisonOutcome comparisonOutcome) throws IOException, SecurityException, NullPointerException {
+    public byte[] serializePCO(IParameterComparisonOutcome comparisonOutcome) throws IOException, SecurityException,
+            NullPointerException {
         return this.gson.toJson(comparisonOutcome).getBytes(this.encoding);
     }
 
     @Override
-    public byte[] serializePCOT(ParameterComparisonOutcomeTemplate comparisonOutcomeTemplate) throws IOException, SecurityException, NullPointerException {
+    public byte[] serializePCOT(ParameterComparisonOutcomeTemplate comparisonOutcomeTemplate) throws IOException,
+            SecurityException, NullPointerException {
         return this.gson.toJson(comparisonOutcomeTemplate).getBytes(this.encoding);
     }
 
@@ -654,10 +656,10 @@ public class JsonEventSerializer implements IEventSerializer {
      * this method.
      * @param serializedEvent The serialized IEvent which will be converted to an actual object.
      * @return Event instance with the initialized data.
-     * @throws IOException - if an I/O error occurs while writing stream header
-     * @throws SecurityException - if untrusted subclass illegally overrides security-sensitive methods
-     * @throws NullPointerException - if o is null
-     * @throws JsonSyntaxException - if the conversion to JSON format fails
+     * @throws IOException If an I/O error occurs while writing stream header
+     * @throws SecurityException If untrusted subclass illegally overrides security-sensitive methods
+     * @throws NullPointerException If serializedEvent or the encoding is null
+     * @throws JsonSyntaxException If the conversion to JSON format fails
      */
     @Override
     public IEvent deserialize(byte[] serializedEvent) throws IOException, SecurityException, NullPointerException,
@@ -671,12 +673,12 @@ public class JsonEventSerializer implements IEventSerializer {
      * @param representative The class object of the class that will be used to represent the deserialized data.
      * @return An initialized object implementing IEvent.
      * @throws java.io.StreamCorruptedException - if the provided data cannot form a stream header that is correct
-     * @throws IOException - if an I/O error occurs while reading stream header
-     * @throws SecurityException - if untrusted subclass illegally overrides security-sensitive methods
-     * @throws NullPointerException - if serializedEvent is null
-     * @throws ClassNotFoundException - if the resulting of the deserialization object cannot be instantiated, because
-     *                                  its class is not found in the system.
-     * @throws JsonSyntaxException - if the conversion to JSON format fails
+     * @throws IOException If an I/O error occurs while reading stream header
+     * @throws SecurityException If untrusted subclass illegally overrides security-sensitive methods
+     * @throws NullPointerException If serializedEvent is null
+     * @throws ClassNotFoundException If the resulting of the deserialization object cannot be instantiated, because
+     *                                its class is not found in the system.
+     * @throws JsonSyntaxException If the conversion to JSON format fails
      */
     public IEvent deserialize(byte[] serializedEvent, Class<? extends IEvent> representative) throws IOException,
             SecurityException, NullPointerException, ClassNotFoundException {

@@ -7,8 +7,8 @@ public enum EventLocationOccurrenceMedium {
     /**
      * Unknown location of occurrence flag value.
      */
-
     UNKNOWN(0L),
+
     /**
      * Physical world location of occurrence flag value.
      */

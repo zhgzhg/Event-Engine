@@ -12,17 +12,21 @@ import java.util.List;
  * Comparable ArrayList used by the engine for bulk comparison of lists and arrays using compareTo method.
  * This class requires to be inherited in order to be instantiated.
  * The recommended approach working for serialization is to extend the class like that:
+ * <pre>
  * {@code
- *   StringComparableArrayList extends ComparableArrayList<String> {
+ *  StringComparableArrayList extends ComparableArrayList<String> {
  *     public StringComparableArrayList() { super(); }
  *     public StringComparableArrayList(StringComparableArrayList o) { super(o); }
- *   }
+ *  }
  * }
+ * </pre>
  *
  * Alternative approach is to use an anonymous class, however the serialization process will be greatly hindered:
+ * <pre>
  * {@code
- *   ComparableArrayList<String> a = new ComparableArrayList<String>(){};
+ *  ComparableArrayList<String> a = new ComparableArrayList<String>(){};
  * }
+ * </pre>
  *
  * @param <T> The data types stored inside the ComparableArrayList. It the type has to be Comparable, but the checks
  *           about that will be made during the run-time. N.B. arrays are not comparable thus for e.g. having a

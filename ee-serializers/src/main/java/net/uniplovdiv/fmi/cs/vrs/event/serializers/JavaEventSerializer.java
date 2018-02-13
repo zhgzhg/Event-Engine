@@ -29,12 +29,14 @@ public class JavaEventSerializer implements IEventSerializer {
     }
 
     @Override
-    public byte[] serializePCO(IParameterComparisonOutcome comparisonOutcome) throws IOException, SecurityException, NullPointerException {
+    public byte[] serializePCO(IParameterComparisonOutcome comparisonOutcome) throws IOException, SecurityException,
+            NullPointerException {
         return this.basicJavaSerializer.serialize(comparisonOutcome);
     }
 
     @Override
-    public byte[] serializePCOT(ParameterComparisonOutcomeTemplate comparisonOutcomeTemplate) throws IOException, SecurityException, NullPointerException {
+    public byte[] serializePCOT(ParameterComparisonOutcomeTemplate comparisonOutcomeTemplate) throws IOException,
+            SecurityException, NullPointerException {
         return this.basicJavaSerializer.serialize(comparisonOutcomeTemplate);
     }
 
@@ -75,10 +77,10 @@ public class JavaEventSerializer implements IEventSerializer {
      * Reads the serialVersionUID from an already serialized event.
      * @param serializedEvent The serialized event to be used.
      * @return The long value of the serialVersionUID for the class.
-     * @throws IOException - if an I/O error occurs while writing stream header
-     * @throws SecurityException - if untrusted subclass illegally overrides security-sensitive methods
-     * @throws NullPointerException - if event is null
-     * @throws ClassNotFoundException - if the resulting of the deserialization object cannot be instantiated, because
+     * @throws IOException If an I/O error occurs while writing stream header
+     * @throws SecurityException If untrusted subclass illegally overrides security-sensitive methods
+     * @throws NullPointerException If event is null
+     * @throws ClassNotFoundException If the resulting of the deserialization object cannot be instantiated, because
      *                                  its class is not found in the system
      */
     public long getSerialVersionUidFromSerializedEvent(byte[] serializedEvent) throws IOException, SecurityException,
@@ -117,11 +119,11 @@ public class JavaEventSerializer implements IEventSerializer {
      * Reads the serialVersionUID from an event instance. In the process a serialization will be made.
      * @param event The event instance to be used.
      * @return The long value of the serialVersionUID for the class.
-     * @throws IOException - if an I/O error occurs while writing stream header
-     * @throws SecurityException - if untrusted subclass illegally overrides security-sensitive methods
-     * @throws NullPointerException - if event is null
-     * @throws ClassNotFoundException - if the resulting of the deserialization object cannot be instantiated, because
-     *                                  its class is not found in the system
+     * @throws IOException If an I/O error occurs while writing stream header
+     * @throws SecurityException If untrusted subclass illegally overrides security-sensitive methods
+     * @throws NullPointerException If event is null
+     * @throws ClassNotFoundException If the resulting of the deserialization object cannot be instantiated, because
+     *                                its class is not found in the system
      */
     public long computeSerialVersionUidFromEvent(IEvent event) throws IOException, SecurityException,
             NullPointerException, ClassNotFoundException {
@@ -132,11 +134,11 @@ public class JavaEventSerializer implements IEventSerializer {
      * Reads the serialVersionUID from an event instance. In the process a serialization will be made.
      * @param helper The event helper instance to be used.
      * @return The long value of the serialVersionUID for the class.
-     * @throws IOException - if an I/O error occurs while writing stream header
-     * @throws SecurityException - if untrusted subclass illegally overrides security-sensitive methods
-     * @throws NullPointerException - if event is null
-     * @throws ClassNotFoundException - if the resulting of the deserialization object cannot be instantiated, because
-     *                                  its class is not found in the system
+     * @throws IOException If an I/O error occurs while writing stream header
+     * @throws SecurityException If untrusted subclass illegally overrides security-sensitive methods
+     * @throws NullPointerException If event is null
+     * @throws ClassNotFoundException If the resulting of the deserialization object cannot be instantiated, because
+     *                                its class is not found in the system
      */
     public long computeSerialVersionUidFromEventHelper(IParameterComparisonOutcome helper) throws IOException,
             SecurityException, NullPointerException, ClassNotFoundException {
@@ -147,11 +149,11 @@ public class JavaEventSerializer implements IEventSerializer {
      * Reads the serialVersionUID from an event instance. In the process a serialization will be made.
      * @param helper The event helper instance to be used.
      * @return The long value of the serialVersionUID for the class.
-     * @throws IOException - if an I/O error occurs while writing stream header
-     * @throws SecurityException - if untrusted subclass illegally overrides security-sensitive methods
-     * @throws NullPointerException - if event is null
-     * @throws ClassNotFoundException - if the resulting of the deserialization object cannot be instantiated, because
-     *                                  its class is not found in the system
+     * @throws IOException If an I/O error occurs while writing stream header
+     * @throws SecurityException If untrusted subclass illegally overrides security-sensitive methods
+     * @throws NullPointerException If event is null
+     * @throws ClassNotFoundException If the resulting of the deserialization object cannot be instantiated, because
+     *                                its class is not found in the system
      */
     public long computeSerialVersionUidFromEventHelper(ParameterComparisonOutcomeTemplate helper) throws IOException,
             SecurityException, NullPointerException, ClassNotFoundException {
