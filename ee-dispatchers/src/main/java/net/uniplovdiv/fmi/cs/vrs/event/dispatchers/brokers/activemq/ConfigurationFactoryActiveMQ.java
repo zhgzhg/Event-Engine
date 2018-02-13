@@ -3,7 +3,7 @@ package net.uniplovdiv.fmi.cs.vrs.event.dispatchers.brokers.activemq;
 import net.uniplovdiv.fmi.cs.vrs.event.IEvent;
 import net.uniplovdiv.fmi.cs.vrs.event.dispatchers.brokers.AbstractBrokerConfigFactory;
 import net.uniplovdiv.fmi.cs.vrs.event.dispatchers.brokers.DispatchingType;
-import net.uniplovdiv.fmi.cs.vrs.event.dispatchers.encapsulation.SerializationMechanism;
+import net.uniplovdiv.fmi.cs.vrs.event.dispatchers.encapsulation.DataEncodingMechanism;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.jndi.ActiveMQInitialContextFactory;
 
@@ -33,7 +33,7 @@ public class ConfigurationFactoryActiveMQ extends AbstractBrokerConfigFactory<Pr
      *            initialize it with a random UUID value. Once generated it is recommended to persist it in order on the
      *            next start of your application to continue reading the events from the offset it has been previously
      *            reached.
-     * @param serializationMechanismType The serialization mechanism to be used when dispatching events in producer
+     * @param dataEncodingMechanismType The serialization mechanism to be used when dispatching events in producer
      *                                   mode. Can be set null which will result defaulting to the Java one. Also see
      *                                   dispatchingType parameter.
      * @param dispatchingType The role that will be taken during event dispatching. See {@link DispatchingType}.
@@ -51,10 +51,10 @@ public class ConfigurationFactoryActiveMQ extends AbstractBrokerConfigFactory<Pr
      * @throws IllegalArgumentException - If topicToEventsMap contains topic keys that are not present in the topics
      *                                    parameter.
      */
-    public ConfigurationFactoryActiveMQ(Properties cfg, SerializationMechanism serializationMechanismType,
+    public ConfigurationFactoryActiveMQ(Properties cfg, DataEncodingMechanism dataEncodingMechanismType,
                                         DispatchingType dispatchingType, Set<String> topics,
                                         Map<String, Set<Class<? extends IEvent>>> topicToEventsMap) {
-        super(serializationMechanismType, dispatchingType, topics, topicToEventsMap);
+        super(dataEncodingMechanismType, dispatchingType, topics, topicToEventsMap);
         this.configuration = new Properties();
         this.configuration.put(Context.INITIAL_CONTEXT_FACTORY, ActiveMQInitialContextFactory.class.getCanonicalName());
         this.configuration.put(Context.PROVIDER_URL, ActiveMQConnectionFactory.DEFAULT_BROKER_BIND_URL);

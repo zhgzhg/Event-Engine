@@ -9,6 +9,75 @@ import java.util.Optional;
  * This class should not be inherited.
  */
 public class DataPacket {
+
+    /**
+     * Contains the supported by DataPacket versions (effectively formats) of data packets.
+     */
+    public enum Version {
+        /**
+         * The first version of the data packet defining the standard format of:
+         * b_packet_version, b_serialization_mechanism_code, b_encoding_charset_name_length, ba_encoding_name,
+         * ba_payload.
+         * Where b_ prefix means byte and ba_ prefix means byte array.
+         */
+        CLASSIC((byte)0),
+
+        /**
+         * A packet nesting another packet within itself. The nested packet is usually encoded into another format.
+         * Check {@link #CLASSIC} for more information on the classical packet structure.
+         */
+        NESTED((byte)65),
+
+        /**
+         * Used to designate unknown, unsupported or invalid version.
+         */
+        BAD((byte)255);
+
+        private byte version;
+
+        Version(byte version) { this.version = version; }
+
+        /**
+         * Returns the byte value representing the version.
+         * @return The byte value equivalent of the selected version member.
+         */
+        public byte getCode() {
+            return version;
+        }
+
+        /**
+         * Returns the code representing a particular version.
+         * @param version The Version value whose code to be retrieved.
+         * @return A byte code value.
+         */
+        public static byte getCode(Version version) {
+            return version.version;
+        }
+
+        /**
+         * Converts to Version member a specified byte value.
+         * @param version The byte value to be converted to Version.
+         * @return The corresponding version member or Version.BAD if the version is bad, unknown or not supported.
+         */
+        public static Version fromCode(byte version) {
+            switch (version) {
+                case 0: return CLASSIC;
+                case 65: return NESTED;
+                default:
+                    return BAD;
+            }
+        }
+
+        /**
+         * Returns the size of the code representing any enumeration in bytes.
+         * @return The integer value with size of the data type in bytes.
+         */
+        @SuppressWarnings("SameReturnValue")
+        public static int getCodeSize() {
+            return Byte.BYTES; // * 1
+        }
+    }
+
     /**
      * The maximum allowed encoding charset name length in bytes.
      */
@@ -21,9 +90,9 @@ public class DataPacket {
 
     private boolean initSuccess;
 
-    private byte dataPacketVersion;
+    private Version dataPacketVersion;
 
-    private SerializationMechanism serializationMechanismType;
+    private DataEncodingMechanism dataEncodingMechanismType;
 
     private Charset encoding;
     private byte[] encodingName_ISO_8859_1;
@@ -35,7 +104,7 @@ public class DataPacket {
      */
     protected DataPacket() {
         this.initSuccess = false;
-        this.dataPacketVersion = 0x00;
+        this.dataPacketVersion = Version.CLASSIC;
         this.encoding = null;
         this.encodingName_ISO_8859_1 = null;
         this.payload = null;
@@ -44,14 +113,14 @@ public class DataPacket {
     /**
      * Constructor used for packaging of data that will be sent as a binary message through another environment.
      * To get the produced package consisting of byte data see {@link #toBytes() toBytes()} method.
-     * @param serializationMechanismType The serialization mechanism used to create payload.
+     * @param dataEncodingMechanismType The serialization mechanism used to create payload.
      * @param encoding The encoding used during the creation of payload. Can be null.
      * @param payload The payload with the actual data.
      * @throws IllegalArgumentException if the provided parameters cannot be packaged.
      */
-    public DataPacket(SerializationMechanism serializationMechanismType, Charset encoding, byte[] payload) {
+    public DataPacket(DataEncodingMechanism dataEncodingMechanismType, Charset encoding, byte[] payload) {
         this();
-        if (serializationMechanismType == null) {
+        if (dataEncodingMechanismType == null) {
             throw new NullPointerException("Serialization mechanism must be specified");
         }
         if (payload == null || payload.length == 0) {
@@ -71,45 +140,63 @@ public class DataPacket {
                 this.encodingName_ISO_8859_1 = encoding.name().getBytes(StandardCharsets.ISO_8859_1);
             }
         }
-        this.serializationMechanismType = serializationMechanismType;
+        this.dataEncodingMechanismType = dataEncodingMechanismType;
         this.encoding = encoding;
         this.payload = payload.clone();
         this.initSuccess = true;
     }
 
     /**
-     * Constructor used to unpack data into the serializationMechanism, encoding and payload fields.
-     * See {@link #getSerializationMechanismType() getSerializationMechanismType()},
+     * Constructor used for packaging of data that will be sent as a binary message through another environment.
+     * To get the produced package consisting of byte data see {@link #toBytes() toBytes()} method.
+     * @param dataEncodingMechanismType The serialization mechanism used to create payload.
+     * @param packetVersion The version (format) of the packet.
+     * @param encoding The encoding used during the creation of payload. Can be null.
+     * @param payload The payload with the actual data.
+     * @throws IllegalArgumentException If the provided parameters cannot be packaged.
+     */
+    public DataPacket(DataEncodingMechanism dataEncodingMechanismType, Version packetVersion, Charset encoding,
+                      byte[] payload) {
+        this(dataEncodingMechanismType, encoding, payload);
+        if (packetVersion == null || packetVersion == Version.BAD)
+            throw new IllegalArgumentException("Invalid packet version specified!");
+        this.dataPacketVersion = packetVersion;
+    }
+
+    /**
+     * Constructor used to unpack data into dataPacketVersion, serializationMechanism, encoding and payload fields.
+     * See {@link #getDataEncodingMechanismType() getDataEncodingMechanismType()},
      * {@link #getEncoding() getEncoding()} and {@link #getPayload() getPayload()} methods.
      *
      * @param data The data to be unpacked.
      * @throws IllegalArgumentException - If the provided parameters cannot be unpacked.
-     * @throws java.nio.charset.IllegalCharsetNameException - If the charset inside the data is illegal.
-     * @throws java.nio.charset.UnsupportedCharsetException - If no support for the charset is available in this
-     *                                                        instance of the Java virtual machine.
+     * @throws java.nio.charset.IllegalCharsetNameException If the charset inside the data is illegal.
+     * @throws java.nio.charset.UnsupportedCharsetException If no support for the charset is available in this instance
+     *                                                      of the Java virtual machine.
      */
     public DataPacket(byte[] data) {
         this();
         if (data == null || data.length < MIN_VALID_PACKET_LENGTH)
             throw new IllegalArgumentException("Malformed data packet");
-        if (data[0] != this.dataPacketVersion)
-            throw new IllegalArgumentException("Not supported packet dataPacketVersion " + data[0]);
+        if ((this.dataPacketVersion = Version.fromCode(data[0])) == Version.BAD)
+            throw new IllegalArgumentException(String.format("Not supported packet dataPacketVersion 0x%02X", data[0]));
 
-        // skip initialization of this.dataPacketVersion since there is only 1 dataPacketVersion
-
-        this.serializationMechanismType = SerializationMechanism.fromCode(data[1]);
+        this.dataEncodingMechanismType = DataEncodingMechanism.fromCode(data[1]);
         int encLength = Byte.toUnsignedInt(data[2]);
 
+        final int FIRST_3_PACKET_FIELDS_SZ = Version.getCodeSize() + DataEncodingMechanism.getCodeSize()
+                + getEncodingNameLengthFieldByteSize();
+
         {
-            int computedPayloadLength = data.length - (3 + encLength);
+            int computedPayloadLength = data.length - (FIRST_3_PACKET_FIELDS_SZ + encLength);
             if (computedPayloadLength < 1)
-                throw new IllegalArgumentException("Malformed data packet missing no payload");
+                throw new IllegalArgumentException("Malformed data packet without payload");
         }
 
-        int i = 0, j = 3;
+        int i = 0, j = FIRST_3_PACKET_FIELDS_SZ;
         if (encLength > 0) {
             this.encodingName_ISO_8859_1 = new byte[encLength];
-            for (; i < encLength; ++i, ++j) {
+            for ( ; i < encLength; ++i, ++j) {
                 this.encodingName_ISO_8859_1[i] = data[j];
             }
 
@@ -143,10 +230,12 @@ public class DataPacket {
         checkInit();
 
         int encLength = (this.encoding != null ? this.encodingName_ISO_8859_1.length : 0);
-        byte[] packet = new byte[1 + SerializationMechanism.getCodeSize() + 1 + encLength + this.payload.length];
 
-        packet[0] = this.dataPacketVersion;
-        packet[1] = serializationMechanismType.getCode(); // potential point for fixing in future if the length of this field is increased
+        byte[] packet = new byte[Version.getCodeSize() + DataEncodingMechanism.getCodeSize()
+                + getEncodingNameLengthFieldByteSize() + encLength + this.payload.length];
+
+        packet[0] = this.dataPacketVersion.getCode();
+        packet[1] = dataEncodingMechanismType.getCode(); // potential point for fixing in future if the length of this field is increased
         packet[2] = (byte)encLength;
 
         int i = 0, j = 3;
@@ -162,6 +251,14 @@ public class DataPacket {
     }
 
     /**
+     * Returns the byte size of the code representing the string representing the used encoding mechanism.
+     * @return A non-negative integer representing size in bytes.
+     */
+    public int getEncodingNameLengthFieldByteSize() {
+        return 1;
+    }
+
+    /**
      * Checks whether the initialization of the class was successful.
      * @return True if the initialization was successful otherwise false.
      */
@@ -171,10 +268,10 @@ public class DataPacket {
 
     /**
      * Returns the version format of the constructed instance.
-     * @return Byte describing the version.
+     * @return Version enumerator describing the version.
      * @throws UnsupportedOperationException If the operation cannot be performed.
      */
-    public byte getDataPacketVersion() {
+    public Version getDataPacketVersion() {
         checkInit();
         return dataPacketVersion;
     }
@@ -184,9 +281,9 @@ public class DataPacket {
      * @throws UnsupportedOperationException If the operation cannot be performed.
      * @return A serialization mechanism value.
      */
-    public SerializationMechanism getSerializationMechanismType() {
+    public DataEncodingMechanism getDataEncodingMechanismType() {
         checkInit();
-        return serializationMechanismType;
+        return dataEncodingMechanismType;
     }
 
     /**
@@ -229,8 +326,8 @@ public class DataPacket {
         result = 31 * result + (initSuccess ? 1 : 0);
         if (!initSuccess) return result;
 
-        result = 31 * result + (int)dataPacketVersion;
-        result = 31 * result + (int)serializationMechanismType.getCode();
+        result = 31 * result + (int) dataPacketVersion.getCode();
+        result = 31 * result + (int) dataEncodingMechanismType.getCode();
         result = 31 * result + (encoding != null ? encoding.hashCode() : 0);
         if (payload != null && payload.length > 0) {
             for (int i = 0; i < payload.length; ++i) {
@@ -261,7 +358,7 @@ public class DataPacket {
             DataPacket _obj = (DataPacket) obj;
             if (this.isInitSuccess() == _obj.isInitSuccess()
                     && this.getDataPacketVersion() == _obj.getDataPacketVersion()
-                    && safeEquals(this.getSerializationMechanismType(), _obj.getSerializationMechanismType())
+                    && safeEquals(this.getDataEncodingMechanismType(), _obj.getDataEncodingMechanismType())
                     && safeEquals(this.getEncoding(), _obj.getEncoding())) {
 
                 byte[] p1 = this.getPayload();
@@ -309,8 +406,8 @@ public class DataPacket {
     @Override
     public String toString() {
         return String.format(
-                "{ initSuccess=%s, dataPacketVersion=%x, serializationMechanismType=%s, encoding=%s, payload=%s }",
-                initSuccess, dataPacketVersion, serializationMechanismType, encoding, bytesToHexJavaCsv(payload)
+                "{ initSuccess=%s, dataPacketVersion=%x, dataEncodingMechanismType=%s, encoding=%s, payload=%s }",
+                initSuccess, dataPacketVersion, dataEncodingMechanismType, encoding, bytesToHexJavaCsv(payload)
         );
     }
 }

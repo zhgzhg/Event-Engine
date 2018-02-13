@@ -4,14 +4,17 @@ import net.uniplovdiv.fmi.cs.vrs.event.Event;
 import net.uniplovdiv.fmi.cs.vrs.event.IEvent;
 import net.uniplovdiv.fmi.cs.vrs.event.dispatchers.CircularFifoSet;
 import net.uniplovdiv.fmi.cs.vrs.event.dispatchers.IEventDispatcher;
+import net.uniplovdiv.fmi.cs.vrs.event.dispatchers.encapsulation.DataEncodingMechanism;
 import net.uniplovdiv.fmi.cs.vrs.event.dispatchers.encapsulation.DataPacket;
-import net.uniplovdiv.fmi.cs.vrs.event.dispatchers.encapsulation.SerializationMechanism;
 import net.uniplovdiv.fmi.cs.vrs.event.parameters.ComparableArrayList;
 import net.uniplovdiv.fmi.cs.vrs.event.serializers.JavaEventSerializer;
 import net.uniplovdiv.fmi.cs.vrs.event.serializers.JsonEventSerializer;
+import net.uniplovdiv.fmi.cs.vrs.event.serializers.engine.Base32Encoder;
 
+import javax.xml.crypto.Data;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
+import java.nio.charset.Charset;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -38,8 +41,8 @@ public abstract class AbstractEventDispatcher implements IEventDispatcher {
      *                                         the available meta information in the received records.
      *                                         This is a more strict limitation compared to latestEventsRememberCapacity
      *                                         since the last one is restricted to the limited amount of run-time data.
-     * @throws NullPointerException - If config is null.
-     * @throws IllegalArgumentException - If latestEventsRememberCapacity is negative number.
+     * @throws NullPointerException If config is null.
+     * @throws IllegalArgumentException If latestEventsRememberCapacity is negative number.
      */
     public AbstractEventDispatcher(AbstractBrokerConfigFactory config, int latestEventsRememberCapacity,
                                    boolean doNotReceiveEventsFromSameSource) {
@@ -73,7 +76,7 @@ public abstract class AbstractEventDispatcher implements IEventDispatcher {
      * Constructor.
      * @param config The configuration settings that also include broker specific configuration options. Cannot be null.
      *               The used latestEventsRemeberCapacity is 15 and doNotReceiveEventsFromSameSource is set to true.
-     * @throws NullPointerException - If config is null.
+     * @throws NullPointerException If config is null.
      */
     public AbstractEventDispatcher(AbstractBrokerConfigFactory config) {
         this(config, 15, true);
@@ -114,48 +117,85 @@ public abstract class AbstractEventDispatcher implements IEventDispatcher {
      * @return The DataPacket representation of the provided event.
      * @throws IOException If event serialization fails.
      * @throws IllegalArgumentException If improper serialization mechanism was specified in the configuration or if
-     *                                    the provided event was null.
+     *                                  the provided event was null.
      * @throws NullPointerException If the required configuration information for the used serialization type is null.
      */
     protected DataPacket eventToDataPacket(IEvent event) throws IOException, IllegalArgumentException {
-        SerializationMechanism serializationMechanismType = null;
+        DataEncodingMechanism dataEncodingMechanismType = null;
         AbstractBrokerConfigFactory conf = this.retrieveConfig(DispatchingType.PRODUCE);
         if (conf != null) {
-            serializationMechanismType = conf.getSerializationMechanismType();
+            dataEncodingMechanismType = conf.getDataEncodingMechanismType();
         }
-        if (serializationMechanismType == null) {
+        if (dataEncodingMechanismType == null) {
             throw new NullPointerException("Null serialization mechanism type specified in the configuration!");
         }
 
-        switch (serializationMechanismType) {
+        switch (dataEncodingMechanismType) {
             case JAVA:
-                return new DataPacket(serializationMechanismType, null,
+                return new DataPacket(dataEncodingMechanismType, null,
                         new JavaEventSerializer().serialize(event));
             case JSON:
                 JsonEventSerializer jes = new JsonEventSerializer();
-                return new DataPacket(serializationMechanismType, jes.getEncoding(), jes.serialize(event));
+                return new DataPacket(dataEncodingMechanismType, jes.getEncoding(), jes.serialize(event));
+
+            case BASE32:
+                throw new IllegalArgumentException("Event cannot be packed using BASE32 format.");
             case UNKNOWN:
             default:
-                throw new IllegalArgumentException("Cannot unpack data packet due to unknown format.");
+                throw new IllegalArgumentException("Cannot pack event in data packet due to unknown format.");
         }
+    }
+
+    /**
+     * Nests an existing data packet into another one.
+     * @param packet An initialized data packet to be nested inside another data packet.
+     * @param dataEncodingMechanism Used for the packet nesting. Only BASE32 is supported.
+     * @return A new data packet containing a nested copy of the existing one in its payload section.
+     * @throws IllegalArgumentException If the provided data packet or data encoding mechanisms are null or invalid.
+     */
+    protected DataPacket nestDataPacket(DataPacket packet, DataEncodingMechanism dataEncodingMechanism) {
+        if (packet == null || dataEncodingMechanism != DataEncodingMechanism.BASE32) {
+            throw new IllegalArgumentException("Bad packet and/or data encoding mechanism provided");
+        }
+
+        Base32Encoder b32enc = new Base32Encoder();
+        byte[] payload = b32enc.encode(packet.getPayload());
+        Charset encoding = packet.getEncoding(); // providing the encoding of the inner packet since BASE32 procedure
+        // works with bytes only and it's not interested in any encodings
+        return new DataPacket(DataEncodingMechanism.BASE32, DataPacket.Version.NESTED, encoding, payload);
     }
 
     /**
      * Converts DataPacket with data to its IEvent instance representation.
      * @param dp The data packet instance to be used. Cannot be null.
      * @return An initialized IEvent or null if the provided data packet was null.
-     * @throws IOException - If event deserialization fails.
-     * @throws ClassNotFoundException - If event serialization fails.
-     * @throws IllegalArgumentException - If the serialization mechanism is not supported or other error.
+     * @throws IOException If event deserialization fails.
+     * @throws ClassNotFoundException If event serialization fails.
+     * @throws IllegalArgumentException If the serialization mechanism is not supported or other error or if the payload
+     *                                  of the data packet is another data packet that failed extracting.
      */
     protected IEvent dataPacketToEvent(DataPacket dp) throws IOException, ClassNotFoundException,
             IllegalArgumentException {
         if (dp == null) return null;
-        switch (dp.getSerializationMechanismType()) {
+        switch (dp.getDataEncodingMechanismType()) {
             case JAVA:
                 return new JavaEventSerializer().deserialize(dp.getPayload());
             case JSON:
-                return new JsonEventSerializer().deserialize(dp.getPayload());
+                JsonEventSerializer jes;
+                if (dp.getEncoding() != null) jes = new JsonEventSerializer(dp.getEncoding());
+                else jes = new JsonEventSerializer();
+                return jes.deserialize(dp.getPayload());
+            case BASE32:
+                if (dp.getDataPacketVersion() != DataPacket.Version.NESTED) {
+                    throw new IllegalArgumentException("Cannot unpack not nested data packet encoded using BASE32!");
+                }
+                Base32Encoder b32e = new Base32Encoder();
+                byte[] nestedPacket = b32e.decode(dp.getPayload());
+                if (nestedPacket == null || nestedPacket.length == 0) {
+                    throw new IllegalArgumentException("Failed to extract nested data packet that is null or with a "
+                            + "length of zero!");
+                }
+                return dataPacketToEvent(new DataPacket(nestedPacket));
             case UNKNOWN:
             default:
                 throw new IllegalArgumentException("Cannot unpack data packet due to unknown format.");

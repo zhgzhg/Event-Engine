@@ -3,7 +3,7 @@ package net.uniplovdiv.fmi.cs.vrs.event.dispatchers.brokers.kafka;
 import net.uniplovdiv.fmi.cs.vrs.event.IEvent;
 import net.uniplovdiv.fmi.cs.vrs.event.dispatchers.brokers.AbstractBrokerConfigFactory;
 import net.uniplovdiv.fmi.cs.vrs.event.dispatchers.brokers.DispatchingType;
-import net.uniplovdiv.fmi.cs.vrs.event.dispatchers.encapsulation.SerializationMechanism;
+import net.uniplovdiv.fmi.cs.vrs.event.dispatchers.encapsulation.DataEncodingMechanism;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
@@ -30,7 +30,7 @@ public class ConfigurationFactoryKafka extends AbstractBrokerConfigFactory<Prope
      *            initialize with random UUID values "group.id" and "client.id". Once generated it is recommended to
      *            persist them in order on the next start of your application to continue reading the events from the
      *            offset it has previously reached.
-     * @param serializationMechanismType The serialization mechanism to be used when dispatching events in producer
+     * @param dataEncodingMechanismType The serialization mechanism to be used when dispatching events in producer
      *                                   mode. Can be set null which will result defaulting to the Java one. Also see
      *                                   dispatchingType parameter.
      * @param dispatchingType The role that will be taken during event dispatching. See {@link DispatchingType}.
@@ -48,10 +48,10 @@ public class ConfigurationFactoryKafka extends AbstractBrokerConfigFactory<Prope
      * @throws IllegalArgumentException - If topicToEventsMap contains topic keys that are not present in the topics
      *                                    parameter.
      */
-    public ConfigurationFactoryKafka(Properties cfg, SerializationMechanism serializationMechanismType,
+    public ConfigurationFactoryKafka(Properties cfg, DataEncodingMechanism dataEncodingMechanismType,
                                      DispatchingType dispatchingType, Set<String> topics,
                                      Map<String, Set<Class<? extends IEvent>>> topicToEventsMap) {
-        super(serializationMechanismType, dispatchingType, topics, topicToEventsMap);
+        super(dataEncodingMechanismType, dispatchingType, topics, topicToEventsMap);
         this.configuration = new Properties();
         this.configuration.putAll(cfg);
     }

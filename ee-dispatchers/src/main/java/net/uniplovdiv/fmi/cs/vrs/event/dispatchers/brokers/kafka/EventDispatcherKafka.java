@@ -44,8 +44,8 @@ public class EventDispatcherKafka extends AbstractEventDispatcher {
      *                                         the available meta information in the received Kafka records.
      *                                         This is a more strict limitation compared to latestEventsRememberCapacity
      *                                         since the last one is restricted to the limited amount of run-time data.
-     * @throws NullPointerException - If config is null.
-     * @throws IllegalArgumentException - If latestEventsRememberCapacity is negative number.
+     * @throws NullPointerException If config is null.
+     * @throws IllegalArgumentException If latestEventsRememberCapacity is negative number.
      */
     public EventDispatcherKafka(ConfigurationFactoryKafka config, int latestEventsRememberCapacity,
                                 boolean doNotReceiveEventsFromSameSource) {
@@ -81,7 +81,7 @@ public class EventDispatcherKafka extends AbstractEventDispatcher {
      * Constructor.
      * @param config The configuration settings that also include Kafka configuration options. Cannot be null.
      *               The used latestEventsRemeberCapacity is 15 and doNotReceiveEventsFromSameSource is set to true.
-     * @throws NullPointerException - If config is null.
+     * @throws NullPointerException If config is null.
      */
     public EventDispatcherKafka(ConfigurationFactoryKafka config) {
         this(config, 15, true);
@@ -97,7 +97,7 @@ public class EventDispatcherKafka extends AbstractEventDispatcher {
                     this.configFactoryProducer.getMainConfiguration(null));
             ConfigurationFactoryKafka cfk = new ConfigurationFactoryKafka(
                     props,
-                    this.configFactoryProducer.getSerializationMechanismType(),
+                    this.configFactoryProducer.getDataEncodingMechanismType(),
                     DispatchingType.CONSUME_PRODUCE,
                     this.configFactoryConsumer.getTopics(),
                     this.configFactoryProducer.getTopicToEventsMap()

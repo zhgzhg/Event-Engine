@@ -3,7 +3,7 @@ package net.uniplovdiv.fmi.cs.vrs.event.dispatchers.brokers;
 import net.uniplovdiv.fmi.cs.vrs.event.Event;
 import net.uniplovdiv.fmi.cs.vrs.event.IEvent;
 import net.uniplovdiv.fmi.cs.vrs.event.dispatchers.AbstractDispatcherConfigFactory;
-import net.uniplovdiv.fmi.cs.vrs.event.dispatchers.encapsulation.SerializationMechanism;
+import net.uniplovdiv.fmi.cs.vrs.event.dispatchers.encapsulation.DataEncodingMechanism;
 import net.uniplovdiv.fmi.cs.vrs.event.serializers.engine.ClassesIEventScanner;
 
 import java.lang.reflect.Constructor;
@@ -13,12 +13,12 @@ import java.util.stream.Collectors;
 
 /**
  * Abstract event broker configuration functional basis.
- * @param <T> - The input that needs to be sent to the factory in order to produce configuration.
- * @param <R> - The configuration object that will be returned by the factory.
+ * @param <T> The input that needs to be sent to the factory in order to produce configuration.
+ * @param <R> The configuration object that will be returned by the factory.
  */
 public abstract class AbstractBrokerConfigFactory<T, R> extends AbstractDispatcherConfigFactory<T, R> {
 
-    protected SerializationMechanism serializationMechanismType;
+    protected DataEncodingMechanism dataEncodingMechanismType;
     protected DispatchingType dispatchingType;
     protected Set<String> topics;
     protected Map<String, Set<Class<? extends IEvent>>> topicToEventsMap;
@@ -28,7 +28,7 @@ public abstract class AbstractBrokerConfigFactory<T, R> extends AbstractDispatch
 
     /**
      * Constructor. Provides the basic configuration parameters.
-     * @param serializationMechanismType The serialization mechanism to be used when dispatching events in producer
+     * @param dataEncodingMechanismType The serialization mechanism to be used when dispatching events in producer
      *                                   mode. Can be set null which will result defaulting to the Java one. Also see
      *                                   dispatchingType parameter.
      * @param dispatchingType The role that will be taken during event dispatching. See {@link DispatchingType}.
@@ -42,21 +42,26 @@ public abstract class AbstractBrokerConfigFactory<T, R> extends AbstractDispatch
      *                         This parameter can also be set to null. In that case the distribution of events will be
      *                         done automatically based on {@link IEvent#getCategory()} method and the filtering
      *                         provided by the topics parameter.
-     * @throws NullPointerException - If cfg is null.
-     * @throws IllegalArgumentException - If topicToEventsMap contains topic keys that are not present in the topics
-     *                                    parameter.
+     * @throws NullPointerException If cfg is null.
+     * @throws IllegalArgumentException If topicToEventsMap contains topic keys that are not present in the topics
+     *                                  parameter or if the provided event encoding mechanism is not supported.
      */
-    public AbstractBrokerConfigFactory(SerializationMechanism serializationMechanismType,
+    public AbstractBrokerConfigFactory(DataEncodingMechanism dataEncodingMechanismType,
                                        DispatchingType dispatchingType, Set<String> topics,
                                        Map<String, Set<Class<? extends IEvent>>> topicToEventsMap) {
+        if (dataEncodingMechanismType == DataEncodingMechanism.BASE32) {
+            throw new IllegalArgumentException("Not supported event encoding mechanism "
+                    + dataEncodingMechanismType.name());
+        }
 
-        this.serializationMechanismType = (
-                serializationMechanismType != null && !serializationMechanismType.equals(SerializationMechanism.UNKNOWN)
+        this.dataEncodingMechanismType = (
+                dataEncodingMechanismType != null && !dataEncodingMechanismType.equals(DataEncodingMechanism.UNKNOWN)
                 ?
-                serializationMechanismType
+                        dataEncodingMechanismType
                 :
-                SerializationMechanism.JAVA
+                DataEncodingMechanism.JAVA
         );
+
         this.dispatchingType = (dispatchingType != null ? dispatchingType : DispatchingType.CONSUME_PRODUCE);
 
         this.topicToEventsMap = new ConcurrentHashMap<>();
@@ -178,7 +183,7 @@ public abstract class AbstractBrokerConfigFactory<T, R> extends AbstractDispatch
     /**
      * Copy constructor.
      * @param cfg The configuration factory to create copy from.
-     * @throws NullPointerException - If null cfg is provided.
+     * @throws NullPointerException If null cfg is provided.
      */
     public AbstractBrokerConfigFactory(AbstractBrokerConfigFactory<T,R> cfg) {
         if (cfg == null) throw new NullPointerException("Copying from null configuration factory!");
@@ -187,7 +192,7 @@ public abstract class AbstractBrokerConfigFactory<T, R> extends AbstractDispatch
         this.identifier2 = cfg.identifier2;
         this.dispatchingType = cfg.dispatchingType;
 
-        this.serializationMechanismType = cfg.serializationMechanismType;
+        this.dataEncodingMechanismType = cfg.dataEncodingMechanismType;
 
         this.topics = ConcurrentHashMap.newKeySet();
         this.topics.addAll(cfg.topics);
@@ -203,8 +208,8 @@ public abstract class AbstractBrokerConfigFactory<T, R> extends AbstractDispatch
      * Returns the configured type of serialization used for de/serializing of data.
      * @return An enumeration value of the used mechanism.
      */
-    public SerializationMechanism getSerializationMechanismType() {
-        return this.serializationMechanismType;
+    public DataEncodingMechanism getDataEncodingMechanismType() {
+        return this.dataEncodingMechanismType;
     }
 
     /**
