@@ -58,7 +58,7 @@ public class ClassesIEventScanner {
      * @return On success nonempty set of data otherwise an empty one.
      */
     public HashSet<Class<? extends IEvent>> scan() {
-        this.foundEventClasses = new HashSet<>();
+        this.foundEventClasses.clear();
         fastClasspathScanner.scan();
         return this.foundEventClasses;
     }

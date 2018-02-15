@@ -7,6 +7,7 @@ import net.uniplovdiv.fmi.cs.vrs.event.dispatchers.IEventDispatcher;
 import net.uniplovdiv.fmi.cs.vrs.event.dispatchers.encapsulation.DataEncodingMechanism;
 import net.uniplovdiv.fmi.cs.vrs.event.dispatchers.encapsulation.DataPacket;
 import net.uniplovdiv.fmi.cs.vrs.event.parameters.ComparableArrayList;
+import net.uniplovdiv.fmi.cs.vrs.event.serializers.IEventSerializer;
 import net.uniplovdiv.fmi.cs.vrs.event.serializers.JavaEventSerializer;
 import net.uniplovdiv.fmi.cs.vrs.event.serializers.JsonEventSerializer;
 import net.uniplovdiv.fmi.cs.vrs.event.serializers.engine.Base32Encoder;
@@ -29,6 +30,9 @@ public abstract class AbstractEventDispatcher implements IEventDispatcher {
     protected final boolean doNotReceiveEventsFromSameSource;
 
     protected final static String CLIENT_ID_HEADER_KEY = "event_src";
+
+    protected Map<Class<?>, IEventSerializer> serializerHelpers;
+    protected Base32Encoder base32EncoderHelper;
 
     /**
      * Constructor.
@@ -70,6 +74,8 @@ public abstract class AbstractEventDispatcher implements IEventDispatcher {
                         new CircularFifoSet<>(this.latestEventsRememberCapacity) : null);
             }
         }
+
+        this.serializerHelpers = new HashMap<>();
     }
 
     /**
@@ -132,10 +138,13 @@ public abstract class AbstractEventDispatcher implements IEventDispatcher {
 
         switch (dataEncodingMechanismType) {
             case JAVA:
-                return new DataPacket(dataEncodingMechanismType, null,
-                        new JavaEventSerializer().serialize(event));
+                IEventSerializer serializer = this.serializerHelpers.computeIfAbsent(
+                        JavaEventSerializer.class, clazz -> new JavaEventSerializer());
+                return new DataPacket(dataEncodingMechanismType, null, serializer.serialize(event));
+
             case JSON:
-                JsonEventSerializer jes = new JsonEventSerializer();
+                JsonEventSerializer jes = (JsonEventSerializer) this.serializerHelpers.computeIfAbsent(
+                        JsonEventSerializer.class, clazz -> new JsonEventSerializer());
                 return new DataPacket(dataEncodingMechanismType, jes.getEncoding(), jes.serialize(event));
 
             case BASE32:
@@ -158,8 +167,10 @@ public abstract class AbstractEventDispatcher implements IEventDispatcher {
             throw new IllegalArgumentException("Bad packet and/or data encoding mechanism provided");
         }
 
-        Base32Encoder b32enc = new Base32Encoder();
-        byte[] payload = b32enc.encode(packet.toBytes());
+        if (base32EncoderHelper == null) {
+            base32EncoderHelper = new Base32Encoder();
+        }
+        byte[] payload = base32EncoderHelper.encode(packet.toBytes());
         Charset encoding = packet.getEncoding(); // providing the encoding of the inner packet since BASE32 procedure
         // works with bytes only and it's not interested in any encodings
         return new DataPacket(DataEncodingMechanism.BASE32, DataPacket.Version.NESTED, encoding, payload);
@@ -179,18 +190,26 @@ public abstract class AbstractEventDispatcher implements IEventDispatcher {
         if (dp == null) return null;
         switch (dp.getDataEncodingMechanismType()) {
             case JAVA:
-                return new JavaEventSerializer().deserialize(dp.getPayload());
+                IEventSerializer serializer = this.serializerHelpers.computeIfAbsent(
+                        JavaEventSerializer.class, clazz -> new JavaEventSerializer());
+                return serializer.deserialize(dp.getPayload());
+
             case JSON:
-                JsonEventSerializer jes;
-                if (dp.getEncoding() != null) jes = new JsonEventSerializer(dp.getEncoding());
-                else jes = new JsonEventSerializer();
+                JsonEventSerializer jes = (JsonEventSerializer) this.serializerHelpers.computeIfAbsent(
+                        JsonEventSerializer.class, clazz -> new JsonEventSerializer());
+                if (dp.getEncoding() != null && !jes.getEncoding().equals(dp.getEncoding())) {
+                    jes = new JsonEventSerializer(dp.getEncoding());
+                }
                 return jes.deserialize(dp.getPayload());
+
             case BASE32:
                 if (dp.getDataPacketVersion() != DataPacket.Version.NESTED) {
                     throw new IllegalArgumentException("Cannot unpack not nested data packet encoded using BASE32!");
                 }
-                Base32Encoder b32e = new Base32Encoder();
-                byte[] nestedPacket = b32e.decode(dp.getPayload());
+                if (base32EncoderHelper == null) {
+                    base32EncoderHelper = new Base32Encoder();
+                }
+                byte[] nestedPacket = base32EncoderHelper.decode(dp.getPayload());
                 if (nestedPacket == null || nestedPacket.length == 0) {
                     throw new IllegalArgumentException("Failed to extract nested data packet that is null or with a "
                             + "length of zero!");

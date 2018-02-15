@@ -388,8 +388,7 @@ public class DataPacket {
         if (bytes.length == 0) return "[]";
 
         char[] hexChars = new char[(bytes.length * 6) - 2];
-        int j = 0;
-        for ( ; j < bytes.length; j++ ) {
+        for (int j = 0; j < bytes.length; ++j) {
             int v = bytes[j] & 0xFF;
             hexChars[j * 6]     = '0';
             hexChars[j * 6 + 1] = 'x';
@@ -406,8 +405,10 @@ public class DataPacket {
     @Override
     public String toString() {
         return String.format(
-                "{ initSuccess=%s, dataPacketVersion=%x, dataEncodingMechanismType=%s, encoding=%s, payload=%s }",
-                initSuccess, dataPacketVersion, dataEncodingMechanismType, encoding, bytesToHexJavaCsv(payload)
+                "{ initSuccess=%s, dataPacketVersion=0x%02x/%s, dataEncodingMechanismType=0x%02x/%s, encoding=%s, "
+                + "payload=%s }", initSuccess, dataPacketVersion.getCode(), dataPacketVersion.name(),
+                dataEncodingMechanismType.getCode(), dataEncodingMechanismType.name(), encoding,
+                bytesToHexJavaCsv(payload)
         );
     }
 }
