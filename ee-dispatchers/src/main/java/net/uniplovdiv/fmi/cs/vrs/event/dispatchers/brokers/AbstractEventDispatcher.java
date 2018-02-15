@@ -159,7 +159,7 @@ public abstract class AbstractEventDispatcher implements IEventDispatcher {
         }
 
         Base32Encoder b32enc = new Base32Encoder();
-        byte[] payload = b32enc.encode(packet.getPayload());
+        byte[] payload = b32enc.encode(packet.toBytes());
         Charset encoding = packet.getEncoding(); // providing the encoding of the inner packet since BASE32 procedure
         // works with bytes only and it's not interested in any encodings
         return new DataPacket(DataEncodingMechanism.BASE32, DataPacket.Version.NESTED, encoding, payload);
