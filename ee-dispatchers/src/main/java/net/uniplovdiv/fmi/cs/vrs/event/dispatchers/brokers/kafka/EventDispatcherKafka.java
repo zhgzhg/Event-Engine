@@ -80,7 +80,7 @@ public class EventDispatcherKafka extends AbstractEventDispatcher {
     /**
      * Constructor.
      * @param config The configuration settings that also include Kafka configuration options. Cannot be null.
-     *               The used latestEventsRemeberCapacity is 15 and doNotReceiveEventsFromSameSource is set to true.
+     *               The used latestEventsRememberCapacity is 15 and doNotReceiveEventsFromSameSource is set to true.
      * @throws NullPointerException If config is null.
      */
     public EventDispatcherKafka(ConfigurationFactoryKafka config) {
@@ -169,7 +169,8 @@ public class EventDispatcherKafka extends AbstractEventDispatcher {
     protected List<DataPacket> doActualReceive(long timeout) {
         ConsumerRecords<String, DataPacket> consumerRecords = null;
         try {
-            consumerRecords = this.consumer.poll(timeout); //timeout documentation is misleading. its for any data in the buffer previously.
+            // Timeout documentation is misleading. It's for any data in the buffer previously.
+            consumerRecords = this.consumer.poll(timeout);
         } catch (WakeupException we) {
             we.printStackTrace(System.err);
         }

@@ -138,7 +138,8 @@ public abstract class AbstractBrokerConfigFactory<T, R> extends AbstractDispatch
                     IEvent event = null;
                     try {
                         @SuppressWarnings("unchecked")
-                        Constructor<? extends IEvent> ctor = (Constructor<? extends IEvent>) _cls.getDeclaredConstructor();
+                        Constructor<? extends IEvent> ctor =
+                                (Constructor<? extends IEvent>) _cls.getDeclaredConstructor();
                         event = ctor.newInstance();
                     } catch (Exception ex) {
                         break;
@@ -146,7 +147,9 @@ public abstract class AbstractBrokerConfigFactory<T, R> extends AbstractDispatch
 
                     String eventCat = event.getCategory();
                     if (!this.topics.contains(eventCat)) {
-                        if (!this.dispatchingType.equals(DispatchingType.CONSUME)) { // consumers by default should be subscribed only to "events" topic or the explicitly stated topics
+                        // consumers by default should be subscribed only to "events" topic
+                        // or the explicitly stated topics
+                        if (!this.dispatchingType.equals(DispatchingType.CONSUME)) {
                             this.topics.add(eventCat);
                         }
                         this.topicToEventsMap.putIfAbsent(eventCat, ConcurrentHashMap.newKeySet());
