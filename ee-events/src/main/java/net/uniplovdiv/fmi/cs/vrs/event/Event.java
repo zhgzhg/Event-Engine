@@ -230,7 +230,7 @@ public class Event implements IEvent, Serializable {
      * @param <T> Generic data type that must be or inherit the Event class.
      * @param _for The class for which the instance to be created. It must inherit Event class.
      * @param callers The instances wrapping the target class that are required in order to be initialized.
-     *                The must follow from the most top one to the most inner one.
+     *                They must follow from the most top one to the most inner one.
      *                Not nested or static classes do not require any.
      * @return New unique Event relative to the others created with via this method or null in case of failure.
      */
