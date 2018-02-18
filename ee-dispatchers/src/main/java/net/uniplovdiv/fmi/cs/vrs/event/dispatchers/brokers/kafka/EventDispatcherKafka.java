@@ -34,7 +34,7 @@ public class EventDispatcherKafka extends AbstractEventDispatcher {
     protected final Header clientIdHeader;
 
     /**
-     * Constructor.
+     * Constructor - the most complete one.
      * @param config The configuration settings that also include Kafka configuration options. Cannot be null.
      * @param latestEventsRememberCapacity The capacity of remembered latest events worked with. Must be 0 or a positive
      *                                     number. Used to prevent same event duplications coming from different
@@ -44,12 +44,14 @@ public class EventDispatcherKafka extends AbstractEventDispatcher {
      *                                         the available meta information in the received Kafka records.
      *                                         This is a more strict limitation compared to latestEventsRememberCapacity
      *                                         since the last one is restricted to the limited amount of run-time data.
+     * @param packagesWithEvents Array of full package names containing custom IEvent implementations. Useful during
+     *                           event de/serialization to increase performance and prevent exceptions. Can be null.
      * @throws NullPointerException If config is null.
      * @throws IllegalArgumentException If latestEventsRememberCapacity is negative number.
      */
     public EventDispatcherKafka(ConfigurationFactoryKafka config, int latestEventsRememberCapacity,
-                                boolean doNotReceiveEventsFromSameSource) {
-        super(config, latestEventsRememberCapacity, doNotReceiveEventsFromSameSource);
+                                boolean doNotReceiveEventsFromSameSource, String[] packagesWithEvents) {
+        super(config, latestEventsRememberCapacity, doNotReceiveEventsFromSameSource, packagesWithEvents);
         this.clientIdHeader = new RecordHeader(
                 CLIENT_ID_HEADER_KEY,
                 config.getMainConfiguration(null).getProperty(config.getClientIdKey())
@@ -80,11 +82,12 @@ public class EventDispatcherKafka extends AbstractEventDispatcher {
     /**
      * Constructor.
      * @param config The configuration settings that also include Kafka configuration options. Cannot be null.
-     *               The used latestEventsRememberCapacity is 15 and doNotReceiveEventsFromSameSource is set to true.
+     *               The used latestEventsRememberCapacity is 15, doNotReceiveEventsFromSameSource is set to true and
+     *               and no additional packages with events are specified.
      * @throws NullPointerException If config is null.
      */
     public EventDispatcherKafka(ConfigurationFactoryKafka config) {
-        this(config, 15, true);
+        this(config, 15, true, null);
     }
 
     /**
@@ -102,8 +105,8 @@ public class EventDispatcherKafka extends AbstractEventDispatcher {
                     this.configFactoryConsumer.getTopics(),
                     this.configFactoryProducer.getTopicToEventsMap()
             );
-            EventDispatcherKafka eventDispatcherKafka = new EventDispatcherKafka(
-                    cfk, this.latestEventsRememberCapacity, this.doNotReceiveEventsFromSameSource);
+            EventDispatcherKafka eventDispatcherKafka = new EventDispatcherKafka(cfk, this.latestEventsRememberCapacity,
+                    this.doNotReceiveEventsFromSameSource, this.packagesWithEvents);
             if (eventDispatcherKafka.latestEventsSent != null) {
                 eventDispatcherKafka.latestEventsSent.addAll(this.latestEventsSent);
             }
@@ -114,15 +117,15 @@ public class EventDispatcherKafka extends AbstractEventDispatcher {
         }
         if (this.configFactoryProducer != null) {
             EventDispatcherKafka eventDispatcherKafka = new EventDispatcherKafka(this.configFactoryProducer,
-                    this.latestEventsRememberCapacity, this.doNotReceiveEventsFromSameSource);
+                    this.latestEventsRememberCapacity, this.doNotReceiveEventsFromSameSource, this.packagesWithEvents);
             if (eventDispatcherKafka.latestEventsSent != null) {
                 eventDispatcherKafka.latestEventsSent.addAll(this.latestEventsSent);
             }
             return eventDispatcherKafka;
         }
 
-        EventDispatcherKafka edk = new EventDispatcherKafka(
-                this.configFactoryConsumer, this.latestEventsRememberCapacity, this.doNotReceiveEventsFromSameSource);
+        EventDispatcherKafka edk = new EventDispatcherKafka(this.configFactoryConsumer,
+                this.latestEventsRememberCapacity, this.doNotReceiveEventsFromSameSource, this.packagesWithEvents);
         if (edk.latestEventsReceived != null) {
             edk.latestEventsReceived.addAll(this.latestEventsReceived);
         }
@@ -134,8 +137,10 @@ public class EventDispatcherKafka extends AbstractEventDispatcher {
         switch (dt) {
             case CONSUME:
                 return this.configFactoryConsumer;
+
             case PRODUCE:
                 return this.configFactoryProducer;
+
             default:
                 return null;
         }

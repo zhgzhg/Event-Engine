@@ -134,7 +134,7 @@ public class EventDispatcherActiveMQ extends AbstractEventDispatcher {
     }
 
     /**
-     * Constructor.
+     * Constructor - the most complete one.
      * @param config The configuration settings that also include ActiveMQ configuration options. Cannot be null.
      * @param latestEventsRememberCapacity The capacity of remembered latest events worked with. Must be 0 or a positive
      *                                     number. Used to prevent same event duplications coming from different
@@ -146,15 +146,18 @@ public class EventDispatcherActiveMQ extends AbstractEventDispatcher {
      *                                         since the last one is restricted to the limited amount of run-time data.
      * @param beRetroactive Tries to gather the oldest available possible data upon connect. Useful especially for
      *                      consumers connecting for the first time to a particular topic.
-     * @throws NullPointerException - If config is null.
-     * @throws IllegalArgumentException - If latestEventsRememberCapacity is negative number.
-     * @throws NamingException - If ActiveMQ cannot be initialized for some reason.
-     * @throws JMSException - If ActiveMQ cannot be initialized for some reason.
+     * @param packagesWithEvents Array of full package names containing custom IEvent implementations. Useful during
+     *                           event de/serialization to increase performance and prevent exceptions. Can be null.
+     * @throws NullPointerException If config is null.
+     * @throws IllegalArgumentException If latestEventsRememberCapacity is negative number.
+     * @throws NamingException If ActiveMQ cannot be initialized for some reason.
+     * @throws JMSException If ActiveMQ cannot be initialized for some reason.
      */
     public EventDispatcherActiveMQ(ConfigurationFactoryActiveMQ config, int latestEventsRememberCapacity,
-                                   boolean doNotReceiveEventsFromSameSource, boolean beRetroactive) throws
+                                   boolean doNotReceiveEventsFromSameSource, boolean beRetroactive,
+                                   String[] packagesWithEvents) throws
             NamingException, JMSException {
-        super(config, latestEventsRememberCapacity, doNotReceiveEventsFromSameSource);
+        super(config, latestEventsRememberCapacity, doNotReceiveEventsFromSameSource, packagesWithEvents);
         this.isRetroactive = beRetroactive;
 
         this.configFactory = new ConfigurationFactoryActiveMQ(config);
@@ -184,22 +187,22 @@ public class EventDispatcherActiveMQ extends AbstractEventDispatcher {
     /**
      * Constructor.
      * @param config The configuration settings that also include ActiveMQ configuration options. Cannot be null.
-     *               The used latestEventsRememberCapacity is 15, doNotReceiveEventsFromSameSource is set to true and
-     *               beRetroactive is set to true.
-     * @throws NullPointerException - If config is null.
-     * @throws NamingException - If ActiveMQ cannot be initialized for some reason.
-     * @throws JMSException - If ActiveMQ cannot be initialized for some reason.
+     *               The used latestEventsRememberCapacity is 15, doNotReceiveEventsFromSameSource is set to true,
+     *               beRetroactive is set to true and no additional packages with events are specified.
+     * @throws NullPointerException If config is null.
+     * @throws NamingException If ActiveMQ cannot be initialized for some reason.
+     * @throws JMSException If ActiveMQ cannot be initialized for some reason.
      */
     public EventDispatcherActiveMQ(ConfigurationFactoryActiveMQ config) throws NamingException, JMSException {
-        this(config, 15, true, true);
+        this(config, 15, true, true, null);
     }
 
     @Override
     public AbstractEventDispatcher makeNewWithSameConfig() {
         EventDispatcherActiveMQ eda = null;
         try {
-            eda = new EventDispatcherActiveMQ(this.configFactory,
-                    this.latestEventsRememberCapacity, this.doNotReceiveEventsFromSameSource, this.isRetroactive);
+            eda = new EventDispatcherActiveMQ(this.configFactory, this.latestEventsRememberCapacity,
+                    this.doNotReceiveEventsFromSameSource, this.isRetroactive, this.packagesWithEvents);
             DispatchingType dt = this.configFactory.getDispatchingType();
             if (!dt.equals(DispatchingType.CONSUME) && eda.latestEventsSent != null && this.latestEventsSent != null) {
                 eda.latestEventsSent.addAll(this.latestEventsSent);
