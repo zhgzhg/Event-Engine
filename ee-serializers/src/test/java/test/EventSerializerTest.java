@@ -1,6 +1,5 @@
 package test;
 
-import com.google.gson.JsonSyntaxException;
 import net.uniplovdiv.fmi.cs.vrs.event.DomainEvent;
 import net.uniplovdiv.fmi.cs.vrs.event.Event;
 import net.uniplovdiv.fmi.cs.vrs.event.IEvent;
@@ -19,6 +18,7 @@ import net.uniplovdiv.fmi.cs.vrs.event.location.EventLocationOccurrenceMedium;
 import net.uniplovdiv.fmi.cs.vrs.event.serializers.JavaEventSerializer;
 import net.uniplovdiv.fmi.cs.vrs.event.annotations.*;
 
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.HashSet;
 import java.util.Set;
@@ -181,7 +181,7 @@ public class EventSerializerTest {
         String data = "{\"__event_type_class_name\":\"test.EventSerializerTest.CustomEvent\",\"someCustomAttribute\":\"blahblah\",\"id\":3,\"timestampMs\":1502083108905,\"priority\":0,\"eventLocation\":{\"address\":\"\",\"occurrenceMediumType\":0,\"extraData\":{}},\"description\":\"\",\"dynamicParameters\":{},\"subEvents\":{},\"serialVersionUID\":9048917202584703043}";
         byte[] bdata = jes.bytesFromString(data);
         System.err.println("-------THIS IS OK------");
-        assertThrows(JsonSyntaxException.class, () -> jes.deserialize(bdata));
+        assertThrows(IOException.class, () -> jes.deserialize(bdata));
         System.err.println("-----------------------");
     }
 
