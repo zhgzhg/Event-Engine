@@ -41,6 +41,7 @@ public class JsonEventSerializer implements IEventSerializer {
     private Gson gson;
     private Charset encoding;
     private ClassesIEventScanner packageScanner;
+    private boolean attemptAutomaticClassRegistration;
 
     //<editor-fold desc="Experiments with Gson generic type adapters">
     /*
@@ -169,6 +170,7 @@ public class JsonEventSerializer implements IEventSerializer {
         }
     }
 
+    // <editor-fold desc="Sample code for additional de/serializers">
     /*
      * Serializers and deserializers for all classes that implement {@link IParameterComparisonOutcome} for GSON.
      *
@@ -329,6 +331,8 @@ public class JsonEventSerializer implements IEventSerializer {
         }
     }
 */
+    //</editor-fold>
+
     /**
      * Serializers and deserializers for all classes that implement {@link IEvent} interface.
      */
@@ -398,6 +402,7 @@ public class JsonEventSerializer implements IEventSerializer {
                 } catch (Exception e) {
                     System.err.println("Cannot deserialize " + className + ". Falling back to Event. Cause: ");
                     e.printStackTrace(System.err);
+                    System.err.println("------------");
                     clazz = Event.class;
                 }
                 object.remove(CLASS_META_KEY);
@@ -412,6 +417,7 @@ public class JsonEventSerializer implements IEventSerializer {
      * Constructor. The default encoding used during serialization/deserialization is UTF-16.
      */
     public JsonEventSerializer() {
+        this.attemptAutomaticClassRegistration = false;
         this.encoding = getDefaultEncoding();
         this.javaEventSerializer = new JavaEventSerializer();
 
@@ -432,23 +438,37 @@ public class JsonEventSerializer implements IEventSerializer {
                 },
                 (RuntimeTypeAdapterFactory.RuntimeFieldRemover) (from, typeClassName, labelToSubtype) -> {
                     if (from == null) return;
+                    Class<?> clazz = labelToSubtype.getOrDefault(typeClassName, null);
+                    if (clazz == null && isAttemptAutomaticClassRegistration()) {
+                        try {
+                            clazz = Class.forName(typeClassName);
+                            if (clazz != null && (IEvent.class.isAssignableFrom(clazz))) {
+                                @SuppressWarnings("unchecked")
+                                Class<? extends IEvent> cls = (Class<? extends IEvent>) clazz;
+                                registerEvent(cls);
+                                labelToSubtype.put(typeClassName, cls);
+                            }
+                        } catch (Exception e) {
+                        }
+                    }
                     try {
-                        Class<?> clazz = labelToSubtype.getOrDefault(typeClassName, Event.class); //Class.forName(typeClassName);
+                        clazz = labelToSubtype.getOrDefault(typeClassName, Event.class); //Class.forName(typeClassName);
                         long serialUid = ObjectStreamClass.lookup(clazz).getSerialVersionUID();
                         if (from.has(IEvent.___SV_UID_FIELD_NAME)) {
                             long serializedSerialUid = from.get(IEvent.___SV_UID_FIELD_NAME).getAsLong();
                             if (serializedSerialUid != serialUid) {
-                                throw new IllegalClassFormatException(IEvent.___SV_UID_FIELD_NAME + " mismatch - original "
-                                        + serialUid + ", serialized " + serializedSerialUid + " - class "
-                                        + typeClassName);
+                                throw new IllegalClassFormatException(IEvent.___SV_UID_FIELD_NAME
+                                        + " mismatch - original " + serialUid + ", serialized " + serializedSerialUid
+                                        + " - class " + typeClassName);
                             }
                         } else {
                             throw new IllegalClassFormatException("Missing field " + IEvent.___SV_UID_FIELD_NAME
                                     + " for serialized class " + typeClassName);
                         }
                     } catch (Exception e) {
-                        System.err.println("Cannot deserialize " + typeClassName + ". Cause: ");
+                        System.err.println("Cannot deserialize " + typeClassName + " using " + clazz + ". Cause: ");
                         e.printStackTrace(System.err);
+                        System.err.println("--------------------");
                         throw new IOException(e);
                     }
                     from.remove(IEvent.___SV_UID_FIELD_NAME);
@@ -586,6 +606,51 @@ public class JsonEventSerializer implements IEventSerializer {
     }
 
     /**
+     * Registers additional event classes.
+     * @param event The event class to be registered.
+     */
+    public void registerEvent(Class<? extends IEvent> event) {
+        if (event != null) {
+            synchronized (this) {
+                this.iEventRuntimeTypeAdapterFactory.registerSubtype(event, getClassFullName(event));
+                this.gson = this.gsonBuilder.create();
+            }
+        }
+    }
+
+    /**
+     * Registers additional event classes.
+     * @param events The set of event classes to be registered.
+     */
+    public void registerEvent(Set<Class<? extends IEvent>> events) {
+        if (events != null) {
+            synchronized (this) {
+                events.forEach(ev -> this.iEventRuntimeTypeAdapterFactory.registerSubtype(ev, getClassFullName(ev)));
+                this.gson = this.gsonBuilder.create();
+            }
+        }
+    }
+
+    /**
+     * Retrieves the status of the automatic class registration mode.
+     * @return True if the mode is activated otherwise false.
+     */
+    public boolean isAttemptAutomaticClassRegistration() {
+        return attemptAutomaticClassRegistration;
+    }
+
+    /**
+     * Sets on or off the automatic class registration mode. This function by is a slower fallback alternative when a
+     * class cannot be de/serialized and allows this class to automatically attempt to register the missing class
+     * in case of a problem. However the performance might be reduced as well as the security of the application, thus
+     * by default is turned off.
+     * @param attemptAutomaticClassRegistration True to turn on the function. False to turn it off.
+     */
+    public void setAttemptAutomaticClassRegistration(boolean attemptAutomaticClassRegistration) {
+        this.attemptAutomaticClassRegistration = attemptAutomaticClassRegistration;
+    }
+
+    /**
      * Returns the default encoding used during de/serialization from/to strings.
      * @return The used encoding instance.
      */
@@ -634,21 +699,104 @@ public class JsonEventSerializer implements IEventSerializer {
         return this.encoding;
     }
 
+    /**
+     * Serializes class for which there is a serializer implementation to byte data.
+     * @param object The original instantiated object to be serialized.
+     * @param <T> The type of the object for which a serializer GSON utility exists.
+     * @return The serialized byte representation of the object.
+     * @throws IOException If an I/O error occurs while reading stream header
+     * @throws SecurityException If untrusted subclass illegally overrides security-sensitive methods
+     * @throws NullPointerException If serializedEvent is null
+     */
+    private <T> byte[] _serialize(T object) throws IOException, SecurityException, NullPointerException {
+        try {
+            return this.gson.toJson(object).getBytes(this.encoding);
+        } catch (RuntimeException ex) {
+            Throwable t = ex.getCause();
+            if (t != null && ((t = t.getCause()) != null) && t instanceof JsonParseException) {
+                if (t.getCause() != null && ((t = t.getCause()) instanceof IOException)) {
+                    throw (IOException) t;
+                }
+                throw new IOException(t);
+            }
+            throw new IOException(ex);
+        }
+    }
+
     @Override
     public byte[] serialize(IEvent event) throws IOException, SecurityException, NullPointerException {
-       return this.gson.toJson(event).getBytes(this.encoding);
+        try {
+            return this._serialize(event);
+        } catch (IOException ex) {
+            registerEvent(event.getClass());
+            return this._serialize(event);
+        }
     }
 
     @Override
     public byte[] serializePCO(IParameterComparisonOutcome comparisonOutcome) throws IOException, SecurityException,
             NullPointerException {
-        return this.gson.toJson(comparisonOutcome).getBytes(this.encoding);
+        return this._serialize(comparisonOutcome);
     }
 
     @Override
     public byte[] serializePCOT(ParameterComparisonOutcomeTemplate comparisonOutcomeTemplate) throws IOException,
             SecurityException, NullPointerException {
-        return this.gson.toJson(comparisonOutcomeTemplate).getBytes(this.encoding);
+        return this._serialize(comparisonOutcomeTemplate);
+    }
+
+    /**
+     * Deserialize byte data representing object implementing object for which a corresponding de/serializer GSON
+     * utility exists to an actual object instance.
+     * @param serializedData The serialized object data which will be converted to an actual object.
+     * @param representative The class object of the class that will be used to represent the deserialized data.
+     * @return An initialized object.
+     * @throws java.io.StreamCorruptedException If the provided data cannot form a stream header that is correct
+     * @throws IOException If an I/O error occurs while reading stream header
+     * @throws SecurityException If untrusted subclass illegally overrides security-sensitive methods
+     * @throws NullPointerException If serializedEvent is null
+     * @throws ClassNotFoundException If the resulting of the deserialization object cannot be instantiated, because
+     *                                its class is not found in the system.
+     */
+    private <R> R _deserialize(byte[] serializedData, Class<? extends R> representative) throws IOException,
+            SecurityException, NullPointerException, ClassNotFoundException {
+        try {
+            return this.gson.fromJson(new String(serializedData, this.encoding), representative);
+        } catch (RuntimeException ex) {
+            Throwable t = ex.getCause();
+            if (t != null && ((t = t.getCause()) != null) && t instanceof JsonParseException) {
+                if (t.getCause() != null && ((t = t.getCause()) instanceof IOException)) {
+                    throw (IOException) t;
+                }
+                throw new IOException(t);
+            }
+            throw new IOException(ex);
+        }
+    }
+
+    /**
+     * Deserialize byte data representing object implementing IEvent to an actual object instance.
+     * @param serializedEvent The serialized IEvent which will be converted to an actual object.
+     * @param representative The class object of the class that will be used to represent the deserialized data.
+     * @return An initialized object implementing IEvent.
+     * @throws java.io.StreamCorruptedException If the provided data cannot form a stream header that is correct
+     * @throws IOException If an I/O error occurs while reading stream header
+     * @throws SecurityException If untrusted subclass illegally overrides security-sensitive methods
+     * @throws NullPointerException If serializedEvent is null
+     * @throws ClassNotFoundException If the resulting of the deserialization object cannot be instantiated, because
+     *                                its class is not found in the system.
+     */
+    public IEvent deserialize(byte[] serializedEvent, Class<? extends IEvent> representative) throws IOException,
+            SecurityException, NullPointerException, ClassNotFoundException {
+        try {
+            return this._deserialize(serializedEvent, representative);
+        } catch (Exception e) {
+            if (isAttemptAutomaticClassRegistration()) {
+                // if not registered class is the case the auto registration should have fixed it. Retry...
+                return this._deserialize(serializedEvent, representative);
+            }
+            throw e;
+        }
     }
 
     /**
@@ -664,38 +812,18 @@ public class JsonEventSerializer implements IEventSerializer {
     @Override
     public IEvent deserialize(byte[] serializedEvent) throws IOException, SecurityException, NullPointerException,
             ClassNotFoundException {
-        return this.gson.fromJson(new String(serializedEvent, this.encoding), IEvent.class);
-    }
-
-    /**
-     * Deserialize byte data representing object implementing IEvent to an actual object instance.
-     * @param serializedEvent The serialized IEvent which will be converted to an actual object.
-     * @param representative The class object of the class that will be used to represent the deserialized data.
-     * @return An initialized object implementing IEvent.
-     * @throws java.io.StreamCorruptedException - if the provided data cannot form a stream header that is correct
-     * @throws IOException If an I/O error occurs while reading stream header
-     * @throws SecurityException If untrusted subclass illegally overrides security-sensitive methods
-     * @throws NullPointerException If serializedEvent is null
-     * @throws ClassNotFoundException If the resulting of the deserialization object cannot be instantiated, because
-     *                                its class is not found in the system.
-     * @throws JsonSyntaxException If the conversion to JSON format fails
-     */
-    public IEvent deserialize(byte[] serializedEvent, Class<? extends IEvent> representative) throws IOException,
-            SecurityException, NullPointerException, ClassNotFoundException {
-        return this.gson.fromJson(new String(serializedEvent, this.encoding), representative);
+        return this.deserialize(serializedEvent, IEvent.class);
     }
 
     @Override
     public IParameterComparisonOutcome deserializePCO(byte[] serializedComparisonOutcome) throws IOException,
             SecurityException, NullPointerException, ClassNotFoundException {
-        return this.gson.fromJson(new String(serializedComparisonOutcome, this.encoding),
-                IParameterComparisonOutcome.class);
+        return this._deserialize(serializedComparisonOutcome, IParameterComparisonOutcome.class);
     }
 
     @Override
     public ParameterComparisonOutcomeTemplate deserializePCOT(byte[] serializedComparisonOutcomeTemplate) throws
             IOException, SecurityException, NullPointerException, ClassNotFoundException {
-        return this.gson.fromJson(new String(serializedComparisonOutcomeTemplate, this.encoding),
-                ParameterComparisonOutcomeTemplate.class);
+        return this._deserialize(serializedComparisonOutcomeTemplate, ParameterComparisonOutcomeTemplate.class);
     }
 }
