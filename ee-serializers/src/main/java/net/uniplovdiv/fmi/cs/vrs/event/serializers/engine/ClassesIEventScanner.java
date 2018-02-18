@@ -29,7 +29,8 @@ public class ClassesIEventScanner {
     /**
      * Constructor specifying the packages to be scanned for classes implementing {@link IEvent} interface plus
      * {@link net.uniplovdiv.fmi.cs.vrs.event} package.
-     * @param packages The Java packages to be scanned.
+     * @param packages The Java packages to be scanned. If is set to null or empty array only the default package will
+     *                 be scanned.
      */
     public ClassesIEventScanner(String... packages) {
         foundEventClasses = new HashSet<>();
@@ -41,7 +42,7 @@ public class ClassesIEventScanner {
                 packagesToScan[j] = packages[i];
             }
         }
-        fastClasspathScanner = new FastClasspathScanner(packages)
+        fastClasspathScanner = new FastClasspathScanner(packagesToScan)
                 .matchClassesImplementing(IEvent.class, matchedClass -> foundEventClasses.add(matchedClass));
     }
 
