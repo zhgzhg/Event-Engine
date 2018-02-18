@@ -14,6 +14,7 @@ import net.uniplovdiv.fmi.cs.vrs.event.serializers.engine.Base32Encoder;
 
 import javax.xml.crypto.Data;
 import java.io.IOException;
+import java.lang.instrument.IllegalClassFormatException;
 import java.lang.reflect.Constructor;
 import java.nio.charset.Charset;
 import java.util.*;
@@ -34,9 +35,11 @@ public abstract class AbstractEventDispatcher implements IEventDispatcher {
     protected Map<Class<?>, IEventSerializer> serializerHelpers;
     protected Base32Encoder base32EncoderHelper;
 
+    protected String[] packagesWithEvents;
+
     /**
      * Constructor.
-     * @param config The configuration settings that also include Kafka configuration options. Cannot be null.
+     * @param config The configuration settings that also include concrete broker configuration options. Cannot be null.
      * @param latestEventsRememberCapacity The capacity of remembered latest events worked with. Must be 0 or a positive
      *                                     number. Used to prevent same event duplications coming from different
      *                                     channels.
@@ -85,7 +88,29 @@ public abstract class AbstractEventDispatcher implements IEventDispatcher {
      * @throws NullPointerException If config is null.
      */
     public AbstractEventDispatcher(AbstractBrokerConfigFactory config) {
-        this(config, 15, true);
+        this(config, 15, true, null);
+    }
+
+    /**
+     * Constructor - the most complete one.
+     * @param config The configuration settings that also include concrete broker configuration options. Cannot be null.
+     * @param latestEventsRememberCapacity The capacity of remembered latest events worked with. Must be 0 or a positive
+     *                                     number. Used to prevent same event duplications coming from different
+     *                                     channels.
+     * @param doNotReceiveEventsFromSameSource Events sent from the same source as the current one will be totally
+     *                                         ignored. Differentiation is made by the identifier set in the config and
+     *                                         the available meta information in the received records.
+     *                                         This is a more strict limitation compared to latestEventsRememberCapacity
+     *                                         since the last one is restricted to the limited amount of run-time data.
+     * @param packagesWithEvents Array of full package names containing custom IEvent implementations. Useful during
+     *                           event de/serialization to increase performance and prevent exceptions. Can be null.
+     * @throws NullPointerException If config is null.
+     * @throws IllegalArgumentException If latestEventsRememberCapacity is negative number.
+     */
+    public AbstractEventDispatcher(AbstractBrokerConfigFactory config, int latestEventsRememberCapacity,
+                                   boolean doNotReceiveEventsFromSameSource, String[] packagesWithEvents) {
+        this(config, latestEventsRememberCapacity, doNotReceiveEventsFromSameSource);
+        this.packagesWithEvents = packagesWithEvents;
     }
 
     /**
@@ -144,7 +169,11 @@ public abstract class AbstractEventDispatcher implements IEventDispatcher {
 
             case JSON:
                 JsonEventSerializer jes = (JsonEventSerializer) this.serializerHelpers.computeIfAbsent(
-                        JsonEventSerializer.class, clazz -> new JsonEventSerializer());
+                        JsonEventSerializer.class, clazz -> {
+                            JsonEventSerializer res = new JsonEventSerializer(this.packagesWithEvents);
+                            res.setAttemptAutomaticClassRegistration(true);
+                            return res;
+                        });
                 return new DataPacket(dataEncodingMechanismType, jes.getEncoding(), jes.serialize(event));
 
             case BASE32:
@@ -196,9 +225,14 @@ public abstract class AbstractEventDispatcher implements IEventDispatcher {
 
             case JSON:
                 JsonEventSerializer jes = (JsonEventSerializer) this.serializerHelpers.computeIfAbsent(
-                        JsonEventSerializer.class, clazz -> new JsonEventSerializer());
+                        JsonEventSerializer.class, clazz -> {
+                            JsonEventSerializer res = new JsonEventSerializer(this.packagesWithEvents);
+                            res.setAttemptAutomaticClassRegistration(true);
+                            return res;
+                        });
                 if (dp.getEncoding() != null && !jes.getEncoding().equals(dp.getEncoding())) {
-                    jes = new JsonEventSerializer(dp.getEncoding());
+                    jes = new JsonEventSerializer(dp.getEncoding(), null, null, this.packagesWithEvents);
+                    jes.setAttemptAutomaticClassRegistration(true);
                 }
                 return jes.deserialize(dp.getPayload());
 
@@ -215,6 +249,7 @@ public abstract class AbstractEventDispatcher implements IEventDispatcher {
                             + "length of zero!");
                 }
                 return dataPacketToEvent(new DataPacket(nestedPacket));
+
             case UNKNOWN:
             default:
                 throw new IllegalArgumentException("Cannot unpack data packet due to unknown format.");
