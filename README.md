@@ -42,3 +42,4 @@ Pay attention to IntelliJ IDEA settings if execution of Maven through it is desi
 version during imports and runs. Sometimes JAVA_HOME might be mandatory to set.
 
 Event Engine relies on not modularized yet dependencies. Migrating to Java 9 may cause problems.
+Compilation for Java 9 with maven will succeed except for the javadoc generation.

@@ -7,7 +7,7 @@ module net.uniplovdiv.fmi.cs.vrs.event.dispatchers {
     requires org.apache.commons.lang3;
     requires kafka.clients;
     requires activemq.client;
-    // requires org.apache.geronimo;
+    requires geronimo;
 
     requires transitive net.uniplovdiv.fmi.cs.vrs.event;
     requires transitive net.uniplovdiv.fmi.cs.vrs.event.annotations;

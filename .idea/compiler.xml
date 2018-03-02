@@ -35,11 +35,11 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel target="1.8">
-      <module name="ee-all" target="1.8" />
-      <module name="ee-annotations" target="1.8" />
-      <module name="ee-dispatchers" target="1.8" />
-      <module name="ee-events" target="1.8" />
-      <module name="ee-serializers" target="1.8" />
+      <module name="ee-all" target="${maven-compiler-plugin-target-version}" />
+      <module name="ee-annotations" target="${maven-compiler-plugin-target-version}" />
+      <module name="ee-dispatchers" target="${maven-compiler-plugin-target-version}" />
+      <module name="ee-events" target="${maven-compiler-plugin-target-version}" />
+      <module name="ee-serializers" target="${maven-compiler-plugin-target-version}" />
       <module name="event-engine" target="1.5" />
     </bytecodeTargetLevel>
   </component>

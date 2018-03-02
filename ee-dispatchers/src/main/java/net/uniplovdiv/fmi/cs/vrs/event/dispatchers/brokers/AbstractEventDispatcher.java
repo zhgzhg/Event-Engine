@@ -12,9 +12,7 @@ import net.uniplovdiv.fmi.cs.vrs.event.serializers.JavaEventSerializer;
 import net.uniplovdiv.fmi.cs.vrs.event.serializers.JsonEventSerializer;
 import net.uniplovdiv.fmi.cs.vrs.event.serializers.engine.Base32Encoder;
 
-import javax.xml.crypto.Data;
 import java.io.IOException;
-import java.lang.instrument.IllegalClassFormatException;
 import java.lang.reflect.Constructor;
 import java.nio.charset.Charset;
 import java.util.*;

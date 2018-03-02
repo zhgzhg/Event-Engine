@@ -44,6 +44,20 @@
             <groupId>org.apache.activemq</groupId>
             <artifactId>activemq-client</artifactId>
             <scope>compile</scope>
+            <exclusions>
+                <exclusion>
+                    <artifactId>org.apache.geronimo.specs</artifactId>
+                    <groupId>geronimo-jms_1.1_spec</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.geronimo.specs</groupId>
+            <artifactId>geronimo-jms_1.1_spec</artifactId>
+            <version>${activemq-client-geronimo-spec-version}</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/lib-hacks/geronimo.jar</systemPath>
         </dependency>
 
         <dependency>
@@ -88,6 +102,33 @@
                         </annotationProcessorPath>
                     </annotationProcessorPaths>
                 </configuration>
+            </plugin>
+
+            <plugin>  <!-- workaround for java9 and geronimo automatic module -->
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-dependencies</id>
+                        <phase>clean</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>org.apache.geronimo.specs</groupId>
+                                    <artifactId>geronimo-jms_1.1_spec</artifactId>
+                                    <version>${activemq-client-geronimo-spec-version}</version>
+                                    <type>jar</type>
+                                    <outputDirectory>${basedir}/lib-hacks</outputDirectory>
+                                    <overWrite>true</overWrite>
+                                    <destFileName>geronimo.jar</destFileName>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
 
             <plugin>
