@@ -53,11 +53,10 @@
         </dependency>
 
         <dependency>
-            <groupId>org.apache.geronimo.specs</groupId>
-            <artifactId>geronimo-jms_1.1_spec</artifactId>
-            <version>${activemq-client-geronimo-spec-version}</version>
-            <scope>system</scope>
-            <systemPath>${basedir}/lib-hacks/geronimo.jar</systemPath>
+            <groupId>com.github.zhgzhg</groupId>
+            <artifactId>event-engine-j9p-workarounds</artifactId>
+            <version>${ee-j9p-workarounds-version}</version>
+            <scope>compile</scope>
         </dependency>
 
         <dependency>
@@ -102,33 +101,6 @@
                         </annotationProcessorPath>
                     </annotationProcessorPaths>
                 </configuration>
-            </plugin>
-
-            <plugin>  <!-- workaround for java9 and geronimo automatic module -->
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>copy-dependencies</id>
-                        <phase>clean</phase>
-                        <goals>
-                            <goal>copy</goal>
-                        </goals>
-                        <configuration>
-                            <artifactItems>
-                                <artifactItem>
-                                    <groupId>org.apache.geronimo.specs</groupId>
-                                    <artifactId>geronimo-jms_1.1_spec</artifactId>
-                                    <version>${activemq-client-geronimo-spec-version}</version>
-                                    <type>jar</type>
-                                    <outputDirectory>${basedir}/lib-hacks</outputDirectory>
-                                    <overWrite>true</overWrite>
-                                    <destFileName>geronimo.jar</destFileName>
-                                </artifactItem>
-                            </artifactItems>
-                        </configuration>
-                    </execution>
-                </executions>
             </plugin>
 
             <plugin>

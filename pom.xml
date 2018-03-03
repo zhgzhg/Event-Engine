@@ -24,7 +24,7 @@
         <repository>
             <id>bintray-zhgzhg-Event-Engine</id>
             <name>zhgzhg-Event-Engine</name>
-            <url>https://api.bintray.com/maven/zhgzhg/Event-Engine/Event-Engine/;publish=0;override=1</url>
+            <url>https://api.bintray.com/maven/zhgzhg/Event-Engine/Event-Engine-J9p-Workarounds/;publish=0;override=1</url>
         </repository>
     </distributionManagement>
 
@@ -36,6 +36,8 @@
         <ee-dispatchers-version>0.1</ee-dispatchers-version>
         <ee-events-version>0.1</ee-events-version>
         <ee-serializers-version>0.1</ee-serializers-version>
+
+        <ee-j9p-workarounds-version>0.1</ee-j9p-workarounds-version>
 
         <commons-lang3-version>3.7</commons-lang3-version>
         <commons-codec-version>1.11</commons-codec-version>
@@ -61,7 +63,6 @@
         <maven-clean-plugin-version>3.0.0</maven-clean-plugin-version>
         <maven-resources-plugin-version>3.0.2</maven-resources-plugin-version>
         <maven-deploy-plugin-version>2.8.2</maven-deploy-plugin-version>
-        <maven-dependency-plugin-version>3.0.2</maven-dependency-plugin-version>
     </properties>
 
     <profiles>
@@ -139,9 +140,9 @@
                 </exclusions>
             </dependency>
             <dependency>
-                <artifactId>org.apache.geronimo.specs</artifactId>
-                <groupId>geronimo-jms_1.1_spec</groupId>
-                <version>${activemq-client-geronimo-spec-version}</version>
+                <artifactId>com.github.zhgzhg</artifactId>
+                <groupId>event-engine-j9p-workarounds</groupId>
+                <version>${ee-j9p-workarounds-version}</version>
             </dependency>
 
             <dependency>
@@ -343,12 +344,6 @@
                             </configuration>
                         </execution>
                     </executions>
-                </plugin>
-
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-dependency-plugin</artifactId>
-                    <version>${maven-dependency-plugin-version}</version>
                 </plugin>
 
                 <plugin>
