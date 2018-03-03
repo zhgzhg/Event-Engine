@@ -24,9 +24,20 @@
         <repository>
             <id>bintray-zhgzhg-Event-Engine</id>
             <name>zhgzhg-Event-Engine</name>
-            <url>https://api.bintray.com/maven/zhgzhg/Event-Engine/Event-Engine-J9p-Workarounds/;publish=0;override=1</url>
+            <url>https://api.bintray.com/maven/zhgzhg/Event-Engine/Event-Engine/;publish=0;override=1</url>
         </repository>
     </distributionManagement>
+
+    <repositories>
+        <repository>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <id>bintray-zhgzhg-Event-Engine</id>
+            <name>bintray</name>
+            <url>https://dl.bintray.com/zhgzhg/Event-Engine</url>
+        </repository>
+    </repositories>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -92,33 +103,6 @@
                 <javadoc-additionalJOption>-html5</javadoc-additionalJOption>
                 <module-info-java-file>module-info.java</module-info-java-file> <!-- javadoc on java 9 issues still persist-->
             </properties>
-        </profile>
-
-        <profile>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <repositories>
-                <repository>
-                    <snapshots>
-                        <enabled>false</enabled>
-                    </snapshots>
-                    <id>bintray-zhgzhg-Event-Engine</id>
-                    <name>bintray</name>
-                    <url>https://dl.bintray.com/zhgzhg/Event-Engine</url>
-                </repository>
-            </repositories>
-            <pluginRepositories>
-                <pluginRepository>
-                    <snapshots>
-                        <enabled>false</enabled>
-                    </snapshots>
-                    <id>bintray-zhgzhg-Event-Engine</id>
-                    <name>bintray-plugins</name>
-                    <url>https://dl.bintray.com/zhgzhg/Event-Engine</url>
-                </pluginRepository>
-            </pluginRepositories>
-            <id>bintray</id>
         </profile>
     </profiles>
 
