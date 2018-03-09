@@ -1,3 +1,6 @@
+/**
+ * Core event definitions and algorithms.
+ */
 module net.uniplovdiv.fmi.cs.vrs.event {
     requires java.base;
     requires org.apache.commons.lang3;

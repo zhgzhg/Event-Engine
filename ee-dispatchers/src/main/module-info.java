@@ -1,3 +1,6 @@
+/**
+ * Distribution of events through different broker systems.
+ */
 module net.uniplovdiv.fmi.cs.vrs.event.dispatchers {
     requires java.base;
     requires java.naming;

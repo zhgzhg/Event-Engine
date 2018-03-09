@@ -1,3 +1,6 @@
+/**
+ * Annotations and annotation processors used when defining new event classes.
+ */
 module net.uniplovdiv.fmi.cs.vrs.event.annotations {
     requires java.base;
     requires java.compiler;
