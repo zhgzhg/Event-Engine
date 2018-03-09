@@ -44,9 +44,9 @@ public class ConfigurationFactoryKafka extends AbstractBrokerConfigFactory<Prope
      *                         This parameter can also be set to null. In that case the distribution of events will be
      *                         done automatically based on {@link IEvent#getCategory()} method and the filtering
      *                         provided by the topics parameter.
-     * @throws NullPointerException - If cfg is null.
-     * @throws IllegalArgumentException - If topicToEventsMap contains topic keys that are not present in the topics
-     *                                    parameter.
+     * @throws NullPointerException If cfg is null.
+     * @throws IllegalArgumentException If topicToEventsMap contains topic keys that are not present in the topics
+     *                                  parameter.
      */
     public ConfigurationFactoryKafka(Properties cfg, DataEncodingMechanism dataEncodingMechanismType,
                                      DispatchingType dispatchingType, Set<String> topics,

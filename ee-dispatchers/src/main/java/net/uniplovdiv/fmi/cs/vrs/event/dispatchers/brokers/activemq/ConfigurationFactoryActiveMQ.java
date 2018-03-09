@@ -47,8 +47,8 @@ public class ConfigurationFactoryActiveMQ extends AbstractBrokerConfigFactory<Pr
      *                         This parameter can also be set to null. In that case the distribution of events will be
      *                         done automatically based on {@link IEvent#getCategory()} method and the filtering
      *                         provided by the topics parameter.
-     * @throws NullPointerException - If cfg is null.
-     * @throws IllegalArgumentException - If topicToEventsMap contains topic keys that are not present in the topics
+     * @throws NullPointerException If cfg is null.
+     * @throws IllegalArgumentException If topicToEventsMap contains topic keys that are not present in the topics
      *                                    parameter.
      */
     public ConfigurationFactoryActiveMQ(Properties cfg, DataEncodingMechanism dataEncodingMechanismType,
