@@ -8,7 +8,6 @@
       <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/fusesource/hawtbuf/hawtbuf/1.11/hawtbuf-1.11.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/apache/geronimo/specs/geronimo-j2ee-management_1.1_spec/1.0.1/geronimo-j2ee-management_1.1_spec-1.0.1.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/google/code/gson/gson/2.8.2/gson-2.8.2.jar" path-in-jar="/" />
-      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/apache/kafka/kafka-clients/1.0.0/kafka-clients-1.0.0.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/lz4/lz4-java/1.4/lz4-java-1.4.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/xerial/snappy/snappy-java/1.1.4/snappy-java-1.1.4.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/apache/commons/commons-lang3/3.7/commons-lang3-3.7.jar" path-in-jar="/" />
@@ -19,6 +18,7 @@
       <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/apache/activemq/activemq-client/5.15.3/activemq-client-5.15.3.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$MAVEN_REPOSITORY$/io/github/lukehutch/fast-classpath-scanner/2.18.1/fast-classpath-scanner-2.18.1.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$MAVEN_REPOSITORY$/commons-codec/commons-codec/1.11/commons-codec-1.11.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/apache/kafka/kafka-clients/1.0.1/kafka-clients-1.0.1.jar" path-in-jar="/" />
     </root>
   </artifact>
 </component>
