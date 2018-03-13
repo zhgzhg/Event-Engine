@@ -23,14 +23,14 @@ How to Compile
 * With Maven:
     * Execute `mvn clean install -P java8`
 
-### For Java 9 - alpha, extremely limited modularization, not recommended:
+### For Java 9+ - alpha, extremely limited modularization, not recommended:
 * With IntelliJ IDEA:
     * Open the project.
     * In project's settings specify Project JDK to be JDK9 
     * For every module copy the file module-info.java inside its java directory.
 
 * With Maven:
-    * Execute `mvn clean install -P java9`
+    * Execute `mvn clean install -P java9p`
     
 Known Issues
 ------------
@@ -41,5 +41,5 @@ generated jars instead!
 Pay attention to IntelliJ IDEA settings if execution of Maven through it is desired. Especially when changing JDK
 version during imports and runs. Sometimes JAVA_HOME might be mandatory to set.
 
-Event Engine relies on not modularized yet dependencies. Migrating to Java 9 may cause problems.
+Event Engine relies on not modularized yet dependencies. Migrating to Java 9+ may cause problems.
 Compilation for Java 9 with maven will succeed except for the javadoc generation.
