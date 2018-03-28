@@ -20,7 +20,7 @@
     <orderEntry type="library" name="commons-codec:commons-codec:1.11" level="project" />
     <orderEntry type="module" module-name="ee-annotations" />
     <orderEntry type="module" module-name="ee-events" />
-    <orderEntry type="library" name="Maven: com.fasterxml:classmate:1.3.4" level="project" />
+    <orderEntry type="library" name="Maven: com.fasterxml:classmate:1.4.0" level="project" />
     <orderEntry type="library" name="Maven: com.google.code.gson:gson:2.8.2" level="project" />
     <orderEntry type="library" name="Maven: org.apache.commons:commons-lang3:3.7" level="project" />
     <orderEntry type="library" name="Maven: commons-codec:commons-codec:1.11" level="project" />
