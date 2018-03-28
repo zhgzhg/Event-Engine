@@ -17,7 +17,7 @@
     <orderEntry type="library" scope="TEST" name="org.junit.jupiter:junit-jupiter-engine:5.1.0" level="project" />
     <orderEntry type="library" scope="TEST" name="org.junit.platform:junit-platform-launcher:1.1.0" level="project" />
     <orderEntry type="library" scope="TEST" name="org.apiguardian:apiguardian-api:1.0.0" level="project" />
-    <orderEntry type="library" name="commons-codec:commons-codec:1.11" level="project" />
+    <orderEntry type="library" exported="" name="commons-codec:commons-codec:1.11" level="project" />
     <orderEntry type="module" module-name="ee-annotations" />
     <orderEntry type="module" module-name="ee-events" />
     <orderEntry type="library" name="Maven: com.fasterxml:classmate:1.4.0" level="project" />
