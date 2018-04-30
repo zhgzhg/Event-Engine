@@ -9,6 +9,7 @@ import net.uniplovdiv.fmi.cs.vrs.event.serializers.engine.ClassesIEventScanner;
 import java.lang.reflect.Constructor;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.stream.Collectors;
 
 /**
@@ -21,8 +22,8 @@ public abstract class AbstractBrokerConfigFactory<T, R> extends AbstractDispatch
     protected DataEncodingMechanism dataEncodingMechanismType;
     protected DispatchingType dispatchingType;
     protected Set<String> topics;
-    protected Map<String, Set<Class<? extends IEvent>>> topicToEventsMap;
-    protected Map<Class<? extends IEvent>, Set<String>> eventToTopicsMap;
+    protected ConcurrentMap<String, Set<Class<? extends IEvent>>> topicToEventsMap;
+    protected ConcurrentMap<Class<? extends IEvent>, Set<String>> eventToTopicsMap;
     protected UUID identifier1;
     protected UUID identifier2;
 
@@ -251,7 +252,7 @@ public abstract class AbstractBrokerConfigFactory<T, R> extends AbstractDispatch
      * Returns an internal mapping structured used for quick determination which topic to which event class corresponds.
      * @return A non null set.
      */
-    public Map<String, Set<Class<? extends IEvent>>> getTopicToEventsMap() {
+    public ConcurrentMap<String, Set<Class<? extends IEvent>>> getTopicToEventsMap() {
         return this.topicToEventsMap;
     }
 
@@ -259,7 +260,7 @@ public abstract class AbstractBrokerConfigFactory<T, R> extends AbstractDispatch
      * Returns an internal mapping structured used for quick determination which event class to which topic corresponds.
      * @return A non null set.
      */
-    public Map<Class<? extends IEvent>, Set<String>> getEventToTopicsMap() {
+    public ConcurrentMap<Class<? extends IEvent>, Set<String>> getEventToTopicsMap() {
         return this.eventToTopicsMap;
     }
 }

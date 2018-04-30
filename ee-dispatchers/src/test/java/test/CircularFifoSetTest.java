@@ -3,6 +3,8 @@ package test;
 import net.uniplovdiv.fmi.cs.vrs.event.dispatchers.CircularFifoSet;
 import org.junit.jupiter.api.Test;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -66,5 +68,29 @@ public class CircularFifoSetTest {
         assertTrue(cfs.contains(6));
     }
 
+    @Test
+    void simpleSynchronizedWrappedOperationsTest() {
+        Collection<Integer> cfs = Collections.synchronizedCollection(new CircularFifoSet<>(5));
 
+        cfs.add(1);
+        cfs.add(3);
+        cfs.add(2);
+
+        assertArrayEquals(new Integer[]{2, 3, 1}, cfs.toArray());
+        cfs.remove(1);
+        assertArrayEquals(new Integer[]{2, 3}, cfs.toArray());
+
+        cfs.add(3);
+        assertArrayEquals(new Integer[]{3, 2}, cfs.toArray());
+
+        cfs.add(4);
+        cfs.add(5);
+        cfs.add(6);
+        cfs.add(7);
+        cfs.add(8);
+        assertArrayEquals(new Integer[]{8, 7, 6, 5, 4}, cfs.toArray());
+
+        cfs.clear();
+        assertTrue(cfs.isEmpty());
+    }
 }

@@ -228,7 +228,7 @@ public class EventDispatcherActiveMQ extends AbstractEventDispatcher {
     }
 
     @Override
-    protected boolean doActualSend(String topic, DataPacket dp) {
+    protected synchronized boolean doActualSend(String topic, DataPacket dp) {
         try {
             BytesMessage msg = session.createBytesMessage();
             msg.writeBytes(dp.toBytes());

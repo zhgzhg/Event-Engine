@@ -16,15 +16,18 @@ import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.nio.charset.Charset;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.function.BiConsumer;
 
 public abstract class AbstractEventDispatcher implements IEventDispatcher {
 
     // Specialized structures for storing the hashes of the DataPackets of the latest sent/received events in order not
     // to receive them again in case of CONSUME_PRODUCE operation mode or 1 event sent to many distribution channels
     // and received by CONSUME or CONSUME_PRODUCE instance
-    protected CircularFifoSet<Integer> latestEventsSent;
-    protected CircularFifoSet<Integer> latestEventsReceived;
+    protected /*CircularFifoSet*/ Collection<Integer> latestEventsSent; // TODO maybe replace with SynchronizedCircularFifoSet
+    protected /*CircularFifoSet*/ Collection<Integer> latestEventsReceived; // TODO maybe replace with SynchronizedCircularFifoSet
     protected final int latestEventsRememberCapacity;
     protected final boolean doNotReceiveEventsFromSameSource;
 
@@ -64,15 +67,15 @@ public abstract class AbstractEventDispatcher implements IEventDispatcher {
         DispatchingType dispatchingType = config.getDispatchingType();
         if (dispatchingType.equals(DispatchingType.PRODUCE)) {
             // PRODUCER
-            this.latestEventsSent = (this.latestEventsRememberCapacity > 0 ?
-                    new CircularFifoSet<>(this.latestEventsRememberCapacity) : null);
+            this.latestEventsSent = (this.latestEventsRememberCapacity > 0 ? Collections.synchronizedCollection(
+                    new CircularFifoSet<Integer>(this.latestEventsRememberCapacity)) : null);
         } else {
-            this.latestEventsReceived = (this.latestEventsRememberCapacity > 0 ?
-                    new CircularFifoSet<>(this.latestEventsRememberCapacity) : null);
+            this.latestEventsReceived = (this.latestEventsRememberCapacity > 0 ? Collections.synchronizedCollection(
+                    new CircularFifoSet<Integer>(this.latestEventsRememberCapacity)) : null);
             if (dispatchingType.equals(DispatchingType.CONSUME_PRODUCE)) {
                 // PRODUCER too
-                this.latestEventsSent = (this.latestEventsRememberCapacity > 0 ?
-                        new CircularFifoSet<>(this.latestEventsRememberCapacity) : null);
+                this.latestEventsSent = (this.latestEventsRememberCapacity > 0 ? Collections.synchronizedCollection(
+                        new CircularFifoSet<Integer>(this.latestEventsRememberCapacity)) : null);
             }
         }
 
@@ -281,8 +284,12 @@ public abstract class AbstractEventDispatcher implements IEventDispatcher {
      */
     protected abstract boolean doActualSend(String topic, DataPacket dp);
 
-    @Override
-    public boolean send(IEvent event) {
+    /**
+     * Prepares to send event by doing internal not initialized structures initialization followed by send pre-checks.
+     * @param event The event to send.
+     * @return True if the preparation is successful, otherwise false.
+     */
+    protected boolean prepareToSend(IEvent event) {
         if (event == null || !doPreSendChecks()) return false;
         AbstractBrokerConfigFactory conf = this.retrieveConfig(DispatchingType.PRODUCE);
         if (conf == null) return false;
@@ -345,6 +352,67 @@ public abstract class AbstractEventDispatcher implements IEventDispatcher {
                 _topics.add(eventCat);
             }
         }
+        return true;
+    }
+
+    @Override
+    public void send(IEvent event, BiConsumer<Boolean, IEvent> onCompletion) {
+        if (prepareToSend(event)) {
+            final DataPacket dp;
+            try {
+                dp = this.eventToDataPacket(event);
+            } catch (Exception e) {
+                e.printStackTrace(System.err);
+                if (onCompletion != null) {
+                    onCompletion.accept(Boolean.FALSE, event);
+                }
+                return;
+            }
+
+            @SuppressWarnings("unchecked")
+            Class<? extends IEvent> ec = event.getClass();
+            @SuppressWarnings("unchecked")
+            ConcurrentMap<Class<? extends IEvent>, Set<String>> eventToTopicsMap =
+                    this.retrieveConfig(DispatchingType.PRODUCE).getEventToTopicsMap();
+            @SuppressWarnings("unchecked")
+            Set<String> eventTopics = eventToTopicsMap.get(ec); // concurrent as well
+
+            if (!eventTopics.isEmpty()) {
+                CompletableFuture.supplyAsync(() -> {
+                    boolean atLeastOneSent = false;
+                    for (String topic : eventToTopicsMap.get(ec)) {
+                        if (doActualSend(topic, dp)) {
+                            if (this.latestEventsSent != null) this.latestEventsSent.add(dp.hashCode());
+                            atLeastOneSent = true;
+                        } else {
+                            System.err.println("Failed to send event " + ec.getCanonicalName() + " to topic " + topic);
+                        }
+                    }
+                    return atLeastOneSent;
+                }).thenAccept((result) -> {
+                    if (onCompletion != null) {
+                        onCompletion.accept(result, event);
+                    }
+                });
+            }
+        } else if (onCompletion != null) {
+            onCompletion.accept(Boolean.FALSE, event);
+        }
+    }
+
+    @Override
+    public boolean send(IEvent event) {
+        if (!prepareToSend(event)) return false;
+
+        @SuppressWarnings("unchecked")
+        Class<? extends IEvent> ec = event.getClass();
+
+        @SuppressWarnings("unchecked")
+        ConcurrentMap<Class<? extends IEvent>, Set<String>> eventToTopicsMap =
+                this.retrieveConfig(DispatchingType.PRODUCE).getEventToTopicsMap();
+
+        @SuppressWarnings("unchecked")
+        Set<String> eventTopics = eventToTopicsMap.get(ec); // concurrent as well
 
         if (!eventTopics.isEmpty()) {
             try {

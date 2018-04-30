@@ -152,7 +152,7 @@ public class EventDispatcherKafka extends AbstractEventDispatcher {
     }
 
     @Override
-    protected boolean doActualSend(String topic, DataPacket dp) {
+    protected synchronized boolean doActualSend(String topic, DataPacket dp) {
         try {
             ProducerRecord<String, DataPacket> pr = new ProducerRecord<>(topic, null, dp);
             pr.headers().add(this.clientIdHeader);
@@ -175,6 +175,7 @@ public class EventDispatcherKafka extends AbstractEventDispatcher {
         ConsumerRecords<String, DataPacket> consumerRecords = null;
         try {
             // Timeout documentation is misleading. It's for any data in the buffer previously.
+            // The actual timeout needs to be tweaked via request.timeout.ms, session.timeout.ms and fetch.max.wait.ms
             consumerRecords = this.consumer.poll(timeout);
         } catch (WakeupException we) {
             we.printStackTrace(System.err);
