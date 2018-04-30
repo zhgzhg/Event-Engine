@@ -6,7 +6,7 @@ package net.uniplovdiv.fmi.cs.vrs.event;
  * embedded parameters.
  */
 public class DomainEvent extends Event {
-    private static final long serialVersionUID = 696033787903784531L;
+    private static final long serialVersionUID = -6497874169095781282L;
 
     /**
      * Constructor.

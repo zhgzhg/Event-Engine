@@ -6,7 +6,7 @@ package net.uniplovdiv.fmi.cs.vrs.event;
  * Any inheritors should override hashCode() and equals() methods if define additional embedded parameters.
  */
 public class EmergencyEvent extends DomainEvent {
-    private static final long serialVersionUID = 4597961402892500529L;
+    private static final long serialVersionUID = 3734983523888272118L;
 
     /**
      * Constructor.

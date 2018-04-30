@@ -6,7 +6,7 @@ package net.uniplovdiv.fmi.cs.vrs.event;
  * embedded parameters.
  */
 public class SystemEvent extends Event {
-    private static final long serialVersionUID = 2926275522197125279L;
+    private static final long serialVersionUID = 7551831649537519598L;
 
     /**
      * Constructor.

@@ -2,7 +2,6 @@ package net.uniplovdiv.fmi.cs.vrs.event;
 
 import net.uniplovdiv.fmi.cs.vrs.event.parameters.IEventsContainer;
 import net.uniplovdiv.fmi.cs.vrs.event.parameters.comparison.ParametersComparisonResult;
-import net.uniplovdiv.fmi.cs.vrs.event.parameters.comparison.*;
 import net.uniplovdiv.fmi.cs.vrs.event.location.EventLocation;
 import net.uniplovdiv.fmi.cs.vrs.event.parameters.ParametersContainer;
 import net.uniplovdiv.fmi.cs.vrs.event.parameters.comparison.ParameterComparisonOutcome;
@@ -46,19 +45,52 @@ public interface IEvent extends Comparable<IEvent> {
     void setId(long id);
 
     /**
-     * Returns the Unix epoch timestamp in microseconds resolution of when the events has occurred.
-     * @return Unix epoch timestamp in microseconds resolution.
+     * Returns the Unix epoch timestamp in milliseconds resolution of when the event has occurred.
+     * @return Unix epoch timestamp in milliseconds resolution.
      */
     long getTimestampMs();
 
     /**
-     * Sets the Unix epoch timestamp in milliseconds resolution of when the events has occurred.
+     * Sets the Unix epoch timestamp in milliseconds resolution of when the event has occurred.
      * @param timestampMs Unix epoch timestamp in milliseconds resolution.
      */
     void setTimestampMs(long timestampMs);
 
     /**
-     * Refreshes the timestamp of the current event by updating it to the current time.
+     * Returns the Unix epoch timestamp in milliseconds resolution from when (including it) the event can be considered
+     * as active (synonyms - valid, meaningful, or even important if you like). Value of 0 indicates no information.
+     * @return Unix epoch timestamp in milliseconds resolution from when (including) the event is valid.
+     */
+    long getValidFromTimestampMs();
+
+    /**
+     * Sets the Unix epoch timestamp in milliseconds resolution from when (including it) the event can be considered
+     * as active (synonyms - valid, meaningful, or even important if you like). Value of 0 indicates no information.
+     * @param validFromTimestampMs Unix epoch timestamp in milliseconds resolution from when (including) the event is
+     *                             valid.
+     */
+    void setValidFromTimestampMs(long validFromTimestampMs);
+
+    /**
+     * Returns the Unix epoch timestamp in milliseconds resolution through when (including it) the event can be
+     * considered as active (synonyms - valid, meaningful, or even important if you like). Value of 0 indicates no
+     * information.
+     * @return Unix epoch timestamp in milliseconds resolution through when (up-to, including) the event is valid.
+     */
+    long getValidThroughTimestampMs();
+
+    /**
+     * Sets the Unix epoch timestamp in milliseconds resolution through when (including it) the event can be
+     * considered as active (synonyms - valid, meaningful, or even important if you like). Value of 0 indicates no
+     * information.
+     * @param validThroughTimestampMs Unix epoch timestamp in milliseconds resolution through when (up-to, including)
+     *                                the event is valid.
+     */
+    void setValidThroughTimestampMs(long validThroughTimestampMs);
+
+    /**
+     * Refreshes the timestamp of the current event by updating it to the current time while "from" and "through"
+     * validity fields will not be affected.
      */
     default void refreshTimestampMs() {
         setTimestampMs(System.currentTimeMillis());
@@ -201,6 +233,45 @@ public interface IEvent extends Comparable<IEvent> {
      */
     default boolean isAtTheSameTimeAs(IEvent event) {
         return (event != null) && (getTimestampMs() == event.getTimestampMs());
+    }
+
+    /**
+     * Checks if the event can be considered as valid (synonyms - valid, meaningful, or even important if you like)
+     * according to its timestamp of creation and the specified "valid from", "valid through" constrains. See methods
+     * {@link #setValidFromTimestampMs(long)}, {@link #setValidThroughTimestampMs(long)},
+     * and {@link #setTimestampMs(long)}.
+     * @return True if the event is considered as valid, otherwise false. However crucial for the determination is the
+     *         "valid from" and/or "valid through" constrains to be defined with valid value(s).
+     */
+    default boolean isValidWhenCreated() {
+        return isValidAt(this.getTimestampMs());
+    }
+
+    /**
+     * Checks if the event can be considered as valid  (synonyms - active, meaningful, or even important if you like)
+     * according to provided timestamp and the specified "valid from", "valid through" constrains. See methods
+     * {@link #setValidFromTimestampMs(long)}, {@link #setValidThroughTimestampMs(long)}.
+     * @param timestampMs The timestamp in milliseconds according to which the check will be done.
+     * @return True if the event is considered as valid, otherwise false. However crucial for the determination is the
+     *         "valid from" and/or "valid through" constrains to be defined with valid value(s).
+     */
+    default boolean isValidAt(long timestampMs) {
+        long fromTs = this.getValidFromTimestampMs();
+        long toTs = this.getValidThroughTimestampMs();
+
+        if (fromTs == toTs) {
+            return (fromTs == 0 || fromTs == timestampMs);
+        }
+
+        if (fromTs != 0 && timestampMs >= fromTs) {
+            return (toTs == 0 || timestampMs <= toTs);
+        }
+
+        if (toTs != 0 && timestampMs <= toTs) {
+            return (fromTs == 0 || timestampMs >= fromTs);
+        }
+
+        return  false;
     }
 
     /**

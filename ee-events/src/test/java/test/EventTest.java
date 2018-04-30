@@ -576,6 +576,8 @@ public class EventTest {
         ParametersComparisonResult expected = new ParametersComparisonResult();
         expected.put(Event.ParamNames.ID, ParameterComparisonOutcome.EQUAL);
         expected.put(Event.ParamNames.TIMESTAMP, ParameterComparisonOutcome.EQUAL);
+        expected.put(Event.ParamNames.VALID_FROM_TIMESTAMP, ParameterComparisonOutcome.EQUAL);
+        expected.put(Event.ParamNames.VALID_THROUGH_TIMESTAMP, ParameterComparisonOutcome.EQUAL);
         expected.put(Event.ParamNames.PRIORITY, ParameterComparisonOutcome.EQUAL);
         expected.put(Event.ParamNames.DESCRIPTION, ParameterComparisonOutcome.EQUAL);
         expected.put(Event.ParamNames.LOCATION, ParameterComparisonOutcome.EQUAL);
@@ -588,6 +590,8 @@ public class EventTest {
         pcr1.put(newEvent.getSubEvents().firstKey().toString(), pcr2);
         pcr2.put(Event.ParamNames.ID, ParameterComparisonOutcome.EQUAL);
         pcr2.put(Event.ParamNames.TIMESTAMP, ParameterComparisonOutcome.EQUAL);
+        pcr2.put(Event.ParamNames.VALID_FROM_TIMESTAMP, ParameterComparisonOutcome.EQUAL);
+        pcr2.put(Event.ParamNames.VALID_THROUGH_TIMESTAMP, ParameterComparisonOutcome.EQUAL);
         pcr2.put(Event.ParamNames.PRIORITY, ParameterComparisonOutcome.EQUAL);
         pcr2.put(Event.ParamNames.DESCRIPTION, ParameterComparisonOutcome.EQUAL);
         pcr2.put(Event.ParamNames.LOCATION, ParameterComparisonOutcome.EQUAL);
@@ -602,6 +606,8 @@ public class EventTest {
 
         pcr4.put(Event.ParamNames.ID, ParameterComparisonOutcome.EQUAL);
         pcr4.put(Event.ParamNames.TIMESTAMP, ParameterComparisonOutcome.EQUAL);
+        pcr4.put(Event.ParamNames.VALID_FROM_TIMESTAMP, ParameterComparisonOutcome.EQUAL);
+        pcr4.put(Event.ParamNames.VALID_THROUGH_TIMESTAMP, ParameterComparisonOutcome.EQUAL);
         pcr4.put(Event.ParamNames.PRIORITY, ParameterComparisonOutcome.EQUAL);
         pcr4.put(Event.ParamNames.DESCRIPTION, ParameterComparisonOutcome.EQUAL);
         pcr4.put(Event.ParamNames.LOCATION, ParameterComparisonOutcome.EQUAL);
@@ -613,5 +619,4 @@ public class EventTest {
         //    System.out.printf("%s - %s" , key, value.toString());
         //});
     }
-
 }

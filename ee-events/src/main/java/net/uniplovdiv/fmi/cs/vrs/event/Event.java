@@ -26,7 +26,7 @@ import java.util.function.UnaryOperator;
  * Any inheritors should override hashCode() and equals() methods if define additional embedded parameters.
  */
 public class Event implements IEvent, Serializable {
-    private static final long serialVersionUID = -71441414431666125L;
+    private static final long serialVersionUID = -4186854840674241325L;
     private static volatile long eventIdAccumulator = 0;
 
     /*
@@ -46,9 +46,19 @@ public class Event implements IEvent, Serializable {
         public static final String ID = "event_id";
 
         /**
-         * Embedded parameter name for event's timestamp.
+         * Embedded parameter name for event's timestamp in milliseconds.
          */
         public static final String TIMESTAMP = "event_timestamp_ms";
+
+        /**
+         * Embedded parameter name for event's valid from timestamp in milliseconds.
+         */
+        public static final String VALID_FROM_TIMESTAMP = "event_valid_from_timestamp_ms";
+
+        /**
+         * Embedded parameter name for event's valid through timestamp in milliseconds.
+         */
+        public static final String VALID_THROUGH_TIMESTAMP = "event_valid_through_timestamp_ms";
 
         /**
          * Embedded parameter name for event's priority.
@@ -84,6 +94,22 @@ public class Event implements IEvent, Serializable {
      */
     @EmbeddedParameter(ParamNames.TIMESTAMP)
     protected long timestampMs;
+
+    /**
+     * Unix epoch timestamp with milliseconds resolution of the time from when (including it) the event can be
+     * considered as active (synonyms - valid, meaningful, or even important if you like). Value of 0 will indicate
+     * no information.
+     */
+    @EmbeddedParameter(ParamNames.VALID_FROM_TIMESTAMP)
+    protected long validFromTimestampMs;
+
+    /**
+     * Unix epoch timestamp with milliseconds resolution of the time through when (including it) the event can be
+     * considered as active (synonyms - valid, meaningful, or even important if you like). Value of 0 will indicate
+     * no information.
+     */
+    @EmbeddedParameter(ParamNames.VALID_THROUGH_TIMESTAMP)
+    protected long validThroughTimestampMs;
 
     /**
      * Priority of the event. Used for sorting (compareTo) purposes. The lower number means higher priority. The higher
@@ -136,6 +162,8 @@ public class Event implements IEvent, Serializable {
         if (e == null) return;
         setId(e.id);
         this.timestampMs = e.timestampMs;
+        this.validFromTimestampMs = e.validFromTimestampMs;
+        this.validThroughTimestampMs = e.validThroughTimestampMs;
         this.priority = e.priority;
         this.description = e.description;
         this.dynamicParameters = constructDynamicParamsStruct(e.dynamicParameters);
@@ -206,11 +234,11 @@ public class Event implements IEvent, Serializable {
     /**
      * Adjusts the internal accumulator of the id generator. Use this method cautiously since it will affect globally
      * any generated after that events, so there is a risk of id collisions. Some affected methods will be
-     * makeInstance() and reserveNewId().
+     * {@link #makeInstance(Class, Object...)} and {@link #setTimestampMs(long)}.
      * This method is useful if any previously processed events are stored somewhere (for e.g. database) including their
      * ids and you want to resume after application restart the id generation from the last n+1 id.
      * @param newStartingValue The identifier value to use as a new basis for generation or reserving ids of events. The
-     *                         specified value will be used as a first id value for the next id generation operation.                         operation.
+     *                         specified value will be used as a first id value for the next id generation operation.
      */
     public static synchronized void adjustIdentifierAccumulator(long newStartingValue) {
         eventIdAccumulator = newStartingValue;
@@ -226,7 +254,7 @@ public class Event implements IEvent, Serializable {
 
     /**
      * Generates a new unique Event which is guaranteed to be unique relative to any previous instances created using
-     * this method.
+     * this method. The method also initializes event's timestamp, and from/through validity to the current time.
      * @param <T> Generic data type that must be or inherit the Event class.
      * @param _for The class for which the instance to be created. It must inherit Event class.
      * @param callers The instances wrapping the target class that are required in order to be initialized.
@@ -266,6 +294,8 @@ public class Event implements IEvent, Serializable {
             try {
                 t.setId(generateEventId());
                 t.setTimestampMs(System.currentTimeMillis());
+                t.setValidFromTimestampMs(t.getTimestampMs());
+                t.setValidThroughTimestampMs(t.getTimestampMs());
             } catch (Throwable ex) {
                 ex.printStackTrace(System.err);
             }
@@ -273,7 +303,7 @@ public class Event implements IEvent, Serializable {
         return t;
     }
 
-    /* TODO - thing whether it should even exist. look at http://openjdk.java.net/jeps/259 https://stackoverflow.com/questions/1696551/how-to-get-the-name-of-the-calling-class-in-java
+    /* TODO - think whether it should even exist. look at http://openjdk.java.net/jeps/259 https://stackoverflow.com/questions/1696551/how-to-get-the-name-of-the-calling-class-in-java
      * @param automaticCallerDetermination If set to true the callers argument will be ignored and the library will
      *                                     automatically try to determine the needed information. On Java 8 and older
      *                                     versions there can be a performance penalty.
@@ -478,6 +508,26 @@ public class Event implements IEvent, Serializable {
     }
 
     @Override
+    public long getValidFromTimestampMs() {
+        return this.validFromTimestampMs;
+    }
+
+    @Override
+    public void setValidFromTimestampMs(long validFromTimestampMs) {
+        this.validFromTimestampMs = validFromTimestampMs;
+    }
+
+    @Override
+    public long getValidThroughTimestampMs() {
+        return this.validThroughTimestampMs;
+    }
+
+    @Override
+    public void setValidThroughTimestampMs(long validThroughTimestampMs) {
+        this.validThroughTimestampMs = validThroughTimestampMs;
+    }
+
+    @Override
     public int getPriority() {
         return this.priority;
     }
@@ -538,7 +588,10 @@ public class Event implements IEvent, Serializable {
         if (this == obj) return true;
         if (obj instanceof IEvent && (this.getClass() == obj.getClass())) {
             IEvent _obj = (IEvent)obj;
-            return (id == _obj.getId() && timestampMs == _obj.getTimestampMs() && priority == _obj.getPriority()
+            return (id == _obj.getId() && timestampMs == _obj.getTimestampMs()
+                    && validFromTimestampMs == _obj.getValidFromTimestampMs()
+                    && validThroughTimestampMs == _obj.getValidThroughTimestampMs()
+                    && priority == _obj.getPriority()
                     && IEvent.safeEquals(description, _obj.getDescription())
                     && IEvent.safeEquals(eventLocation,_obj.getEventLocation())
                     && IEvent.safeEquals(dynamicParameters, _obj.getDynamicParameters())
@@ -557,6 +610,8 @@ public class Event implements IEvent, Serializable {
         result = 31 * result + getClass().getName().hashCode();
         result = 31 * result + (int)(id ^ (id >>> 32));
         result = 31 * result + (int)(timestampMs ^ (timestampMs >>> 32));
+        result = 31 * result + (int)(validFromTimestampMs ^ (validFromTimestampMs >>> 32));
+        result = 31 * result + (int)(validThroughTimestampMs ^ (validThroughTimestampMs >>> 32));
         result = 31 * result + priority;
         result = 31 * result + ((description != null) ? description.hashCode() : 0);
         result = 31 * result + ((dynamicParameters != null) ? dynamicParameters.hashCode() : 0);
@@ -566,12 +621,13 @@ public class Event implements IEvent, Serializable {
     }
 
     /**
-     * Compares the current event to another one based on the priority, or in case of equality the time when they have
-     * occurred or based on the event identifiers in case of time equality. This is the exact exact evaluation sequence
-     * performed during event comparison.
+     * Compares the current event to another one based on the priority, or the computed validity for the time when they
+     * have occurred (been created), or based on the time they have occurred, or based on the event identifiers. This is
+     * the exact exact evaluation sequence performed during event comparison. The evaluation immediately ends when a
+     * difference is found.
      * @param event The events to which to compare the current one.
      * @return In the current one has happened earlier -1, later 1 or 0 if both events occurred at the same time.
-     * @throws NullPointerException Thrown if events parameter is null.
+     * @throws NullPointerException If event parameter is null.
      */
     @Override
     public int compareTo(IEvent event) throws NullPointerException {
@@ -580,6 +636,8 @@ public class Event implements IEvent, Serializable {
                 return -1;
             } else if (this.priority > event.getPriority()) {
                 return 1;
+            } else if (this.isValidWhenCreated() != event.isValidWhenCreated()) {
+                return (this.isValidWhenCreated() ? -1 : 1);
             } else if (this.timestampMs < event.getTimestampMs()) {
                 return -1;
             } else if (this.timestampMs > event.getTimestampMs()) {
