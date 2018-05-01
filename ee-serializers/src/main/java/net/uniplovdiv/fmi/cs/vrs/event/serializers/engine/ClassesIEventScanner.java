@@ -80,8 +80,8 @@ public class ClassesIEventScanner {
     @Deprecated
     private void actIfJava9OrLater(Runnable r) {
         try {
-            Runtime.Version ver = Runtime.Version.parse(System.getProperty("java.version"));
-            if (ver.major() >= 9 && r != null) {
+            double ver = Double.parseDouble(System.getProperty("java.specification.version"));
+            if (ver >= 9.0 && r != null) {
                 r.run();
             }
         } catch (Exception ex) {
