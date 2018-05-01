@@ -86,9 +86,9 @@
             <properties>
                 <maven-compiler-plugin-source-version>1.8</maven-compiler-plugin-source-version>
                 <maven-compiler-plugin-target-version>1.8</maven-compiler-plugin-target-version>
-                <module-info-java-file></module-info-java-file>
-                <javadoc-additionalJOption></javadoc-additionalJOption>
-                <argline-maven-surefire-plugin></argline-maven-surefire-plugin>
+                <module-info-java-file/>
+                <javadoc-additionalJOption/>
+                <argline-maven-surefire-plugin/>
             </properties>
         </profile>
 
