@@ -17,7 +17,7 @@
     <orderEntry type="module" module-name="ee-events" />
     <orderEntry type="library" name="Maven: com.fasterxml:classmate:1.4.0" level="project" />
     <orderEntry type="module" module-name="ee-serializers" />
-    <orderEntry type="library" name="Maven: com.google.code.gson:gson:2.8.3" level="project" />
+    <orderEntry type="library" name="Maven: com.google.code.gson:gson:2.8.4" level="project" />
     <orderEntry type="library" name="Maven: commons-codec:commons-codec:1.11" level="project" />
     <orderEntry type="library" name="Maven: io.github.lukehutch:fast-classpath-scanner:2.18.2" level="project" />
     <orderEntry type="module" module-name="ee-dispatchers" />
