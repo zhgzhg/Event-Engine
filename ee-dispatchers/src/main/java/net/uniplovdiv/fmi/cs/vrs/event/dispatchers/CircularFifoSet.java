@@ -22,7 +22,7 @@ public class CircularFifoSet<E> implements Collection<E> {
             throw new IllegalArgumentException("Illegal initial capacity: " + capacity);
         }
         this.capacity = capacity;
-        this.contents = new HashSet<>(capacity, 1.0F);
+        this.contents = new HashSet<>(capacity, 2.0F);
         this.orderedContents = new LinkedList<>();
     }
 
@@ -38,23 +38,24 @@ public class CircularFifoSet<E> implements Collection<E> {
      * Adds an element to the collection. If the element's already been added, the new operation will change its
      * internal position to be on first place. This ensures that the element will be kept for longer in the set.
      * @param e The element to be added. Cannot be null.
-     * @return True if the addition succeeds.
+     * @return True if the addition is on element that's unknown to the collection, otherwise false.
      */
     @Override
     public boolean add(E e) {
 
         //synchronized (this) {
-            if (contents.size() == this.capacity) {
-                contents.remove(orderedContents.getLast());
-                orderedContents.removeLast();
-            }
-
             if (!contents.isEmpty() && contents.contains(e)) {
                 // the element already exists so move it to in first place
                 orderedContents.removeFirstOccurrence(e);
                 orderedContents.addFirst(e);
+                return false;
             } else {
                 // brand new element
+                if (contents.size() == this.capacity) {
+                    contents.remove(orderedContents.getLast());
+                    orderedContents.removeLast();
+                }
+
                 contents.add(e);
                 orderedContents.addFirst(e);
             }
@@ -79,7 +80,7 @@ public class CircularFifoSet<E> implements Collection<E> {
 
     @Override
     public boolean contains(Object e) {
-        return (!contents.isEmpty() && e != null && contents.contains(e));
+        return (e != null && !contents.isEmpty() && contents.contains(e));
     }
 
     @Override
