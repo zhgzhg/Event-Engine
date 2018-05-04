@@ -5,6 +5,7 @@ import net.uniplovdiv.fmi.cs.vrs.event.dispatchers.brokers.AbstractBrokerConfigF
 import net.uniplovdiv.fmi.cs.vrs.event.dispatchers.brokers.AbstractEventDispatcher;
 import net.uniplovdiv.fmi.cs.vrs.event.dispatchers.brokers.DispatchingType;
 import net.uniplovdiv.fmi.cs.vrs.event.dispatchers.encapsulation.DataPacket;
+import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
@@ -15,14 +16,24 @@ import org.apache.kafka.common.header.Header;
 import org.apache.kafka.common.header.internals.RecordHeader;
 
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
+import java.util.function.Function;
 
 
 /**
  * Dispatches IEvent instances using Apache Kafka.
  */
 public class EventDispatcherKafka extends AbstractEventDispatcher {
+    protected static final ScheduledExecutorService taskScheduler = Executors.newScheduledThreadPool(
+            Math.min(6, Runtime.getRuntime().availableProcessors()),
+            new BasicThreadFactory.Builder()
+                    .namingPattern("event-dispatcher-kafka-%d")
+                    .daemon(true)
+                    .priority(Thread.MAX_PRIORITY)
+                    .build()
+    );
 
     protected ConfigurationFactoryKafka configFactoryConsumer;
     protected ConfigurationFactoryKafka configFactoryProducer;
@@ -170,34 +181,65 @@ public class EventDispatcherKafka extends AbstractEventDispatcher {
         return !(this.consumer == null || this.configFactoryConsumer == null);
     }
 
+    /**
+     * Executes a task within certain time or timeouts.
+     * @param task The task to be executed.
+     * @param timeoutAfter The time interval after a timeout to be resulted.
+     * @param <T> The result type returned by this CompletableFuture's get method.
+     * @return Instance of CompletableFuture that will execute within a certain time or timeout.
+     */
+    protected static <T> CompletableFuture<T> executeWithin(CompletableFuture<T> task, Duration timeoutAfter) {
+        final CompletableFuture<T> timedOutTask =
+                AbstractEventDispatcher.failAfter(timeoutAfter, EventDispatcherKafka.taskScheduler);
+        return task.applyToEither(timedOutTask, Function.identity());
+    }
+
     @Override
     protected List<DataPacket> doActualReceive(long timeout) {
-        ConsumerRecords<String, DataPacket> consumerRecords = null;
-        try {
-            // Timeout documentation is misleading. It's for any data in the buffer previously.
-            // The actual timeout needs to be tweaked via request.timeout.ms, session.timeout.ms and fetch.max.wait.ms
-            consumerRecords = this.consumer.poll(timeout);
-        } catch (WakeupException we) {
-            we.printStackTrace(System.err);
-        }
-
-        if (consumerRecords == null || consumerRecords.isEmpty()) return null;
-
-        List<DataPacket> result = new ArrayList<>(consumerRecords.count());
-
-        for (ConsumerRecord<String, DataPacket> cr : consumerRecords) {
-            // prevent receiving data sent by us with more strict approach based on metadata inside the record
-            if (this.doNotReceiveEventsFromSameSource) {
-                Header h = cr.headers().lastHeader(this.clientIdHeader.key());
-                if (h != null && h.value() != null
-                        && Arrays.equals(h.value(), this.clientIdHeader.value())) {
-                    continue;
-                }
+        Callable<List<DataPacket>> task = () -> {
+            ConsumerRecords<String, DataPacket> consumerRecords = null;
+            try {
+                // Timeout documentation is misleading. It's for any data in the buffer previously. The actual timeout
+                // needs to be tweaked via request.timeout.ms, session.timeout.ms and fetch.max.wait.ms
+                // Also poll() always blocks indefinitely if there's no connection.
+                consumerRecords = consumer.poll(timeout);
+            } catch (WakeupException we) {
+                we.printStackTrace(System.err);
             }
-            result.add(cr.value());
+
+            if (consumerRecords == null || consumerRecords.isEmpty()) return null;
+
+            List<DataPacket> result = new ArrayList<>(consumerRecords.count());
+
+            for (ConsumerRecord<String, DataPacket> cr : consumerRecords) {
+                // prevent receiving data sent by us with more strict approach based on metadata inside the record
+                if (this.doNotReceiveEventsFromSameSource) {
+                    Header h = cr.headers().lastHeader(this.clientIdHeader.key());
+                    if (h != null && h.value() != null
+                            && Arrays.equals(h.value(), this.clientIdHeader.value())) {
+                        continue;
+                    }
+                }
+                result.add(cr.value());
+            }
+
+            return (result.isEmpty() ? null : result);
+        };
+
+        List<DataPacket> result = null;
+        try {
+            result = executeWithin(AbstractEventDispatcher.scheduleNow(task, EventDispatcherKafka.taskScheduler),
+                    Duration.ofMillis(timeout * 2))
+                    .exceptionally((t) -> {
+                        System.err.println("Poll timeout reached! Interrupting the receiving of events...");
+                        consumer.wakeup();
+                        return null;
+                    })
+                    .get();
+        } catch (Exception ex) {
+            ex.printStackTrace(System.err);
         }
 
-        if (result.isEmpty()) return null;
         return result;
     }
 
