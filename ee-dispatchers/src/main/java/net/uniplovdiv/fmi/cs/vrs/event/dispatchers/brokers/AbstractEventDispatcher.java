@@ -15,11 +15,13 @@ import net.uniplovdiv.fmi.cs.vrs.event.serializers.engine.Base32Encoder;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.nio.charset.Charset;
+import java.time.Duration;
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.*;
 import java.util.function.BiConsumer;
+import java.util.function.Function;
+
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 public abstract class AbstractEventDispatcher implements IEventDispatcher {
 
@@ -494,4 +496,50 @@ public abstract class AbstractEventDispatcher implements IEventDispatcher {
 
     @Override
     public abstract void close();
+
+    /**
+     * Executes a task within certain time or timeouts.
+     * @param task The task to be executed.
+     * @param timeoutAfter The time interval after a timeout to be resulted.
+     * @param taskScheduler The task scheduler executor service used to detect the timeout.
+     * @param <T> The result type returned by this CompletableFuture's get method.
+     * @return Instance of CompletableFuture that will execute within a certain time or timeout.
+     */
+    public static <T> CompletableFuture<T> executeWithin(CompletableFuture<T> task, Duration timeoutAfter,
+                                                         ScheduledExecutorService taskScheduler) {
+        final CompletableFuture<T> timedOutTask = failAfter(timeoutAfter, taskScheduler);
+        return task.applyToEither(timedOutTask, Function.identity());
+    }
+
+    /**
+     * Creates CompletableFuture that will certainly fail by throwing internally TimeoutException. Used for creating
+     * futures with timeouts.
+     * @param afterDuration The duration after the TimeoutException (ExecutionException) will be raised and the task
+     *                      will fail.
+     * @param taskScheduler The task scheduler executor service to be used to run the timing out task.
+     * @param <T> The result type returned by this CompletableFuture's get method.
+     * @return A new CompletableFuture instance.
+     */
+    protected static <T> CompletableFuture<T> failAfter(Duration afterDuration, ScheduledExecutorService taskScheduler) {
+        final CompletableFuture<T> promise = new CompletableFuture<>();
+        taskScheduler.schedule(() -> {
+            final TimeoutException ex = new TimeoutException("Timeout after " + afterDuration);
+            return promise.completeExceptionally(ex);
+        }, afterDuration.toMillis(), MILLISECONDS);
+        return promise;
+    }
+
+    /**
+     * Creates CompletableFuture from Callable task, that gets executed immediately through existing
+     * ScheduledExecutorService.
+     * @param task The task to be executed.
+     * @param taskScheduler The task scheduler executor service to be used to run the timing out task.
+     * @param <T> The result type returned by this CompletableFuture's get method.
+     * @return A new CompletableFuture instance.
+     */
+    public static <T> CompletableFuture<T> scheduleNow(Callable<T> task, ScheduledExecutorService taskScheduler) {
+        final CompletableFuture<T> promise = new CompletableFuture<>();
+        taskScheduler.schedule(() -> promise.complete(task.call()), 0, MILLISECONDS);
+        return promise;
+    }
 }
