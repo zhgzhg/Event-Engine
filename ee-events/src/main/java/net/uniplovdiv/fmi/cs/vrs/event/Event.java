@@ -303,7 +303,10 @@ public class Event implements IEvent, Serializable {
         return t;
     }
 
-    /* TODO - think whether it should even exist. look at http://openjdk.java.net/jeps/259 https://stackoverflow.com/questions/1696551/how-to-get-the-name-of-the-calling-class-in-java
+    /* TODO - think whether it should even exist. Look at
+     * http://openjdk.java.net/jeps/259
+     * https://stackoverflow.com/questions/1696551/how-to-get-the-name-of-the-calling-class-in-java
+     * https://stackoverflow.com/questions/936684/getting-the-class-name-from-a-static-method-in-java
      * @param automaticCallerDetermination If set to true the callers argument will be ignored and the library will
      *                                     automatically try to determine the needed information. On Java 8 and older
      *                                     versions there can be a performance penalty.

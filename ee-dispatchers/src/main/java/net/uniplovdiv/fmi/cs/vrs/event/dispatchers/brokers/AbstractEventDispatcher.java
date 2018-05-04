@@ -28,8 +28,8 @@ public abstract class AbstractEventDispatcher implements IEventDispatcher {
     // Specialized structures for storing the hashes of the DataPackets of the latest sent/received events in order not
     // to receive them again in case of CONSUME_PRODUCE operation mode or 1 event sent to many distribution channels
     // and received by CONSUME or CONSUME_PRODUCE instance
-    protected /*CircularFifoSet*/ Collection<Integer> latestEventsSent; // TODO maybe replace with SynchronizedCircularFifoSet
-    protected /*CircularFifoSet*/ Collection<Integer> latestEventsReceived; // TODO maybe replace with SynchronizedCircularFifoSet
+    protected Collection<Integer> latestEventsSent;
+    protected Collection<Integer> latestEventsReceived;
     protected final int latestEventsRememberCapacity;
     protected final boolean doNotReceiveEventsFromSameSource;
 
