@@ -12,13 +12,13 @@
       <element id="module-output" name="ee-dispatchers" />
       <element id="module-output" name="ee-serializers" />
       <element id="module-output" name="ee-events" />
-      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/apache/activemq/activemq-client/5.15.3/activemq-client-5.15.3.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$MAVEN_REPOSITORY$/commons-codec/commons-codec/1.11/commons-codec-1.11.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/fasterxml/classmate/1.4.0/classmate-1.4.0.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/apache/kafka/kafka-clients/1.1.0/kafka-clients-1.1.0.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/xerial/snappy/snappy-java/1.1.7.1/snappy-java-1.1.7.1.jar" path-in-jar="/" />
-      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/google/code/gson/gson/2.8.4/gson-2.8.4.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$MAVEN_REPOSITORY$/io/github/lukehutch/fast-classpath-scanner/2.21/fast-classpath-scanner-2.21.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/google/code/gson/gson/2.8.5/gson-2.8.5.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/apache/activemq/activemq-client/5.15.4/activemq-client-5.15.4.jar" path-in-jar="/" />
     </root>
   </artifact>
 </component>

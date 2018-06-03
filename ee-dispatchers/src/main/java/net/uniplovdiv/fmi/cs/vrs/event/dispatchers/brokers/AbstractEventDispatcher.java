@@ -498,7 +498,7 @@ public abstract class AbstractEventDispatcher implements IEventDispatcher {
     public abstract void close();
 
     /**
-     * Executes a task within certain time or timeouts.
+     * Executes a task within certain time, otherwise it timeouts.
      * @param task The task to be executed.
      * @param timeoutAfter The time interval after a timeout to be resulted.
      * @param taskScheduler The task scheduler executor service used to detect the timeout.
@@ -520,7 +520,8 @@ public abstract class AbstractEventDispatcher implements IEventDispatcher {
      * @param <T> The result type returned by this CompletableFuture's get method.
      * @return A new CompletableFuture instance.
      */
-    protected static <T> CompletableFuture<T> failAfter(Duration afterDuration, ScheduledExecutorService taskScheduler) {
+    protected static <T> CompletableFuture<T> failAfter(Duration afterDuration,
+                                                        ScheduledExecutorService taskScheduler) {
         final CompletableFuture<T> promise = new CompletableFuture<>();
         taskScheduler.schedule(() -> {
             final TimeoutException ex = new TimeoutException("Timeout after " + afterDuration);
