@@ -150,7 +150,7 @@ public abstract class AbstractBrokerConfigFactory<T, R> extends AbstractDispatch
                     if (!this.topics.contains(eventCat)) {
                         // consumers by default should be subscribed only to "events" topic
                         // or the explicitly stated topics
-                        if (!this.dispatchingType.equals(DispatchingType.CONSUME)) {
+                        if (this.dispatchingType.equals(DispatchingType.PRODUCE)) {
                             this.topics.add(eventCat);
                         }
                         this.topicToEventsMap.putIfAbsent(eventCat, ConcurrentHashMap.newKeySet());

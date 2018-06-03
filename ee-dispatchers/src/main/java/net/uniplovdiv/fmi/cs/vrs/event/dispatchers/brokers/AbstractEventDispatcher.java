@@ -453,7 +453,7 @@ public abstract class AbstractEventDispatcher implements IEventDispatcher {
     @Override
     public List<IEvent> receive(long timeout) {
         if (!doPreReceiveChecks()) return null;
-        AbstractBrokerConfigFactory conf = this.retrieveConfig(DispatchingType.PRODUCE);
+        AbstractBrokerConfigFactory conf = this.retrieveConfig(DispatchingType.CONSUME);
         if (conf == null) return null;
         @SuppressWarnings("unchecked")
         Set<String> topics = conf.getTopics();

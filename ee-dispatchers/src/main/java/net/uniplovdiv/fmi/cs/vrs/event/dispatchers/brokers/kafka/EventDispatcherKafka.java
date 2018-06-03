@@ -73,7 +73,7 @@ public class EventDispatcherKafka extends AbstractEventDispatcher {
         DispatchingType dispatchingType = config.getDispatchingType();
 
         Properties props = config.getMainConfiguration(null);
-        if (dispatchingType.equals(DispatchingType.PRODUCE)) {
+        if (dispatchingType == DispatchingType.PRODUCE) {
             // PRODUCER only
             this.configFactoryProducer = new ConfigurationFactoryKafka(config);
             this.producer = new KafkaProducer<>(props);
@@ -82,7 +82,7 @@ public class EventDispatcherKafka extends AbstractEventDispatcher {
             this.configFactoryConsumer = new ConfigurationFactoryKafka(config);
             this.consumer = new KafkaConsumer<>(props);
             this.consumer.subscribe(config.getTopics());
-            if (dispatchingType.equals(DispatchingType.CONSUME_PRODUCE)) {
+            if (dispatchingType == DispatchingType.CONSUME_PRODUCE) {
                 // PRODUCER too
                 this.configFactoryProducer = new ConfigurationFactoryKafka(config);
                 this.producer = new KafkaProducer<>(props);
