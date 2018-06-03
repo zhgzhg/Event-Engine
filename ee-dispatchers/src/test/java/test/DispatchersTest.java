@@ -182,9 +182,6 @@ public class DispatchersTest {
                 DispatchingType.CONSUME, null, null);
         HashSet<String> topics = new HashSet<>();
         topics.add("events");
-        /*topics.add("system-events");
-        topics.add("domain-events");
-        topics.add("emergency-events");*/
         assertEquals(topics, cfk.getTopics());
 
         Map<Class<? extends IEvent>, Set<String>> eventToTopicsMap = new HashMap<>();
@@ -211,14 +208,15 @@ public class DispatchersTest {
         assertEquals(eventToTopicsMap, cfk.getEventToTopicsMap());
         assertEquals(topicToEventsMap, cfk.getTopicToEventsMap());
 
+        topics = new HashSet<>();
+        topics.add("events");
+
         cfk = new ConfigurationFactoryKafka(new Properties(), null,
                 DispatchingType.CONSUME_PRODUCE, null, null);
         assertEquals(topics, cfk.getTopics());
         assertEquals(eventToTopicsMap, cfk.getEventToTopicsMap());
         assertEquals(topicToEventsMap, cfk.getTopicToEventsMap());
 
-        topics = new HashSet<>();
-        topics.add("events");
         cfk = new ConfigurationFactoryKafka(new Properties(), null,
                 DispatchingType.CONSUME,  topics, null);
         assertEquals(topics, cfk.getTopics());
@@ -286,8 +284,6 @@ public class DispatchersTest {
         topics.clear();
         topics.add("events");
         topics.add("system-events");
-        topics.add("domain-events");
-        topics.add("emergency-events");
         assertEquals(topics, cfk.getTopics());
         topicToEventsMap.clear();
         topicToEventsMap.put("events", new HashSet<Class<? extends IEvent>>(){{add(Event.class);add(DomainEvent.class);add(EmergencyEvent.class);add(SystemEvent.class);}});
