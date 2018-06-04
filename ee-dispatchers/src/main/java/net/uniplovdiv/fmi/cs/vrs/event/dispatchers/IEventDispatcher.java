@@ -9,6 +9,15 @@ import java.util.function.BiConsumer;
  * Dispatcher interface for events.
  */
 public interface IEventDispatcher {
+
+    /**
+     * Returns if the current dispatcher instance is connected or not. In case of mixed consumer-producer mode the
+     * result will be true only if there's a connection for both modes. The result lag from the actual connectivity
+     * status!
+     * @return True if there is an active connection, otherwise false.
+     */
+    boolean isConnected();
+
     /**
      * Sends an event to any subscribed receivers. This is usually done in a synchronous manner.
      * @param event The event to be sent. Must not be null.

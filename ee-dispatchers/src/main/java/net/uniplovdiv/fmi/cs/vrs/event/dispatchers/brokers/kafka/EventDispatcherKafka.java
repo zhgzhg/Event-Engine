@@ -6,11 +6,14 @@ import net.uniplovdiv.fmi.cs.vrs.event.dispatchers.brokers.AbstractEventDispatch
 import net.uniplovdiv.fmi.cs.vrs.event.dispatchers.brokers.DispatchingType;
 import net.uniplovdiv.fmi.cs.vrs.event.dispatchers.encapsulation.DataPacket;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
+import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.common.Metric;
+import org.apache.kafka.common.MetricName;
 import org.apache.kafka.common.errors.WakeupException;
 import org.apache.kafka.common.header.Header;
 import org.apache.kafka.common.header.internals.RecordHeader;
@@ -155,6 +158,59 @@ public class EventDispatcherKafka extends AbstractEventDispatcher {
             default:
                 return null;
         }
+    }
+
+    @Override
+    public boolean isConnected() {
+        final MutableBoolean result = new MutableBoolean(false);
+
+        if (this.consumer != null) {
+            Map<MetricName, ? extends Metric> metrics = this.consumer.metrics();
+
+            for (Iterator<? extends Map.Entry<MetricName, ? extends Metric>> it = metrics.entrySet().iterator();
+                 it.hasNext(); ) {
+                Map.Entry<MetricName, ? extends Metric> ent = it.next();
+                MetricName key = ent.getKey();
+                if (key.name().equals("connection-count") && key.group().equals("consumer-metrics")) {
+                    try {
+                        double res = Double.parseDouble(ent.getValue().metricValue().toString());
+                        result.setValue(res > 0);
+                    } catch (Exception e) {
+                        result.setFalse();
+                        e.printStackTrace(System.err);
+                    } finally {
+                        break;
+                    }
+                }
+            }
+        }
+
+        if (this.producer!= null) {
+            Map<MetricName, ? extends Metric> metrics = this.producer.metrics();
+
+            for (Iterator<? extends Map.Entry<MetricName, ? extends Metric>> it = metrics.entrySet().iterator();
+                 it.hasNext(); ) {
+                Map.Entry<MetricName, ? extends Metric> ent = it.next();
+                MetricName key = ent.getKey();
+                if (key.name().equals("connection-count") && key.group().equals("producer-metrics")) {
+                    try {
+                        double res = Double.parseDouble(ent.getValue().metricValue().toString());
+                        if (this.consumer != null) {
+                            result.setValue(result.getValue().booleanValue() & (res > 0));
+                        } else {
+                            result.setValue(res > 0);
+                        }
+                    } catch (Exception e) {
+                        result.setFalse();
+                        e.printStackTrace(System.err);
+                    } finally {
+                        break;
+                    }
+                }
+            }
+        }
+
+        return result.booleanValue();
     }
 
     @Override

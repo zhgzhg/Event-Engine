@@ -5,13 +5,17 @@ import net.uniplovdiv.fmi.cs.vrs.event.dispatchers.brokers.AbstractBrokerConfigF
 import net.uniplovdiv.fmi.cs.vrs.event.dispatchers.brokers.AbstractEventDispatcher;
 import net.uniplovdiv.fmi.cs.vrs.event.dispatchers.brokers.DispatchingType;
 import net.uniplovdiv.fmi.cs.vrs.event.dispatchers.encapsulation.DataPacket;
+import org.apache.activemq.ActiveMQConnection;
+import org.apache.activemq.transport.TransportListener;
 
 import javax.jms.*;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Dispatches IEvent instances using Apache ActiveMQ.
@@ -26,6 +30,8 @@ public class EventDispatcherActiveMQ extends AbstractEventDispatcher {
     protected Consumer consumer;
 
     protected boolean isRetroactive;
+
+    protected final AtomicBoolean isConnected = new AtomicBoolean(false);
 
     /**
      * Wrapper of MessageConsumer allowing seamless multiple topics per "one" consumer.
@@ -168,6 +174,19 @@ public class EventDispatcherActiveMQ extends AbstractEventDispatcher {
         Context ctx = new InitialContext(props);
         ConnectionFactory cf = (ConnectionFactory)ctx.lookup("ConnectionFactory");
         this.connection = cf.createConnection();
+        ((ActiveMQConnection)this.connection).addTransportListener(new TransportListener() {
+            @Override
+            public void onCommand(Object o) {}
+
+            @Override
+            public void onException(IOException e) { }
+
+            @Override
+            public void transportInterupted() { isConnected.lazySet(false); }
+
+            @Override
+            public void transportResumed() { isConnected.lazySet(true); }
+        });
         this.connection.setClientID(props.getProperty(configFactory.getClientIdKey()));
         this.connection.start();
 
@@ -282,6 +301,11 @@ public class EventDispatcherActiveMQ extends AbstractEventDispatcher {
     }
 
     @Override
+    public boolean isConnected() {
+        return isConnected.get();
+    }
+
+    @Override
     public void close() {
         if (this.producer != null) {
             try {
@@ -309,6 +333,7 @@ public class EventDispatcherActiveMQ extends AbstractEventDispatcher {
             } catch (Exception e) {
                 e.printStackTrace(System.err);
             }
+            this.isConnected.lazySet(false);
             this.connection = null;
         }
     }
