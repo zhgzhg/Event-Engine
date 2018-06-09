@@ -187,19 +187,24 @@ public class EventDispatcherActiveMQ extends AbstractEventDispatcher {
             @Override
             public void transportResumed() { isConnected.lazySet(true); }
         });
-        this.connection.setClientID(props.getProperty(configFactory.getClientIdKey()));
-        this.connection.start();
+        try {
+            this.connection.setClientID(props.getProperty(configFactory.getClientIdKey()));
+            this.connection.start();
 
-        boolean isTransacted = false;
-        //noinspection ConstantConditions
-        this.session = this.connection.createSession(isTransacted, Session.AUTO_ACKNOWLEDGE);
+            boolean isTransacted = false;
+            //noinspection ConstantConditions
+            this.session = this.connection.createSession(isTransacted, Session.AUTO_ACKNOWLEDGE);
 
-        if (!dispatchingType.equals(DispatchingType.CONSUME)) {
-            this.producer = this.session.createProducer(null);
-            this.producer.setDeliveryMode(DeliveryMode.PERSISTENT);
-        }
-        if (!dispatchingType.equals(DispatchingType.PRODUCE)) {
-            this.consumer = new Consumer(config.getTopics(), beRetroactive);
+            if (!dispatchingType.equals(DispatchingType.CONSUME)) {
+                this.producer = this.session.createProducer(null);
+                this.producer.setDeliveryMode(DeliveryMode.PERSISTENT);
+            }
+            if (!dispatchingType.equals(DispatchingType.PRODUCE)) {
+                this.consumer = new Consumer(config.getTopics(), beRetroactive);
+            }
+        } catch (Exception e) {
+            this.close();
+            throw e;
         }
     }
 
