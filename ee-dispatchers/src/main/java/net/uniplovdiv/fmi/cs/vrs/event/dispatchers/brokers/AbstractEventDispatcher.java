@@ -534,7 +534,7 @@ public abstract class AbstractEventDispatcher implements IEventDispatcher {
      * Creates CompletableFuture from Callable task, that gets executed immediately through existing
      * ScheduledExecutorService.
      * @param task The task to be executed.
-     * @param taskScheduler The task scheduler executor service to be used to run the timing out task.
+     * @param taskScheduler The task scheduler executor service to be used to run the task.
      * @param <T> The result type returned by this CompletableFuture's get method.
      * @return A new CompletableFuture instance.
      */
