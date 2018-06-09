@@ -238,7 +238,7 @@ public class EventDispatcherKafka extends AbstractEventDispatcher {
     }
 
     /**
-     * Executes a task within certain time or timeouts.
+     * Executes a task within certain time or timeouts with TimeoutException.
      * @param task The task to be executed.
      * @param timeoutAfter The time interval after a timeout to be resulted.
      * @param <T> The result type returned by this CompletableFuture's get method.
@@ -285,7 +285,7 @@ public class EventDispatcherKafka extends AbstractEventDispatcher {
         List<DataPacket> result = null;
         try {
             result = executeWithin(AbstractEventDispatcher.scheduleNow(task, EventDispatcherKafka.taskScheduler),
-                    Duration.ofMillis(timeout * 2))
+                    Duration.ofMillis(timeout + 10)) // extra 10ms for the task to spinup
                     .exceptionally((t) -> {
                         System.err.println("Poll timeout reached! Interrupting the receiving of events...");
                         consumer.wakeup();

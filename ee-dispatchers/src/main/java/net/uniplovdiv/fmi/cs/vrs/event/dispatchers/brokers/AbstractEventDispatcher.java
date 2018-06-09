@@ -498,7 +498,7 @@ public abstract class AbstractEventDispatcher implements IEventDispatcher {
     public abstract void close();
 
     /**
-     * Executes a task within certain time, otherwise it timeouts.
+     * Executes a task within certain time, otherwise it timeouts with TimeoutException.
      * @param task The task to be executed.
      * @param timeoutAfter The time interval after a timeout to be resulted.
      * @param taskScheduler The task scheduler executor service used to detect the timeout.
