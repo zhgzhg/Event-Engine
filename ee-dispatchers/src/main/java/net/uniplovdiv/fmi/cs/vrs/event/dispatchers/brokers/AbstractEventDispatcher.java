@@ -498,7 +498,7 @@ public abstract class AbstractEventDispatcher implements IEventDispatcher {
     public abstract void close();
 
     /**
-     * Executes a task within certain time, otherwise it timeouts with TimeoutException.
+     * Executes task (synchronously in task's context) within certain time, otherwise it timeouts with TimeoutException.
      * @param task The task to be executed.
      * @param timeoutAfter The time interval after a timeout to be resulted.
      * @param taskScheduler The task scheduler executor service used to detect the timeout.
@@ -508,12 +508,15 @@ public abstract class AbstractEventDispatcher implements IEventDispatcher {
     public static <T> CompletableFuture<T> executeWithin(CompletableFuture<T> task, Duration timeoutAfter,
                                                          ScheduledExecutorService taskScheduler) {
         final CompletableFuture<T> timedOutTask = failAfter(timeoutAfter, taskScheduler);
-        return task.applyToEither(timedOutTask, Function.identity());
+        return task.applyToEither(timedOutTask, (t) -> {
+            timedOutTask.cancel(true);
+            return t;
+        });
     }
 
     /**
      * Creates CompletableFuture that will certainly fail by throwing internally TimeoutException. Used for creating
-     * futures with timeouts.
+     * futures with timeouts. The timeout logic is scheduled/executed asynchronously.
      * @param afterDuration The duration after the TimeoutException (ExecutionException) will be raised and the task
      *                      will fail.
      * @param taskScheduler The task scheduler executor service to be used to run the timing out task.
