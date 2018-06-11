@@ -29,14 +29,18 @@ import java.util.function.Function;
  * Dispatches IEvent instances using Apache Kafka.
  */
 public class EventDispatcherKafka extends AbstractEventDispatcher {
-    protected static final ScheduledExecutorService taskScheduler = Executors.newScheduledThreadPool(
-            Math.min(6, Runtime.getRuntime().availableProcessors()),
-            new BasicThreadFactory.Builder()
-                    .namingPattern("event-dispatcher-kafka-%d")
-                    .daemon(true)
-                    .priority(Thread.MAX_PRIORITY)
-                    .build()
-    );
+    protected static final ScheduledExecutorService taskScheduler;
+    static {
+        taskScheduler = Executors.newScheduledThreadPool(
+                Math.min(6, Runtime.getRuntime().availableProcessors()),
+                new BasicThreadFactory.Builder()
+                        .namingPattern("event-dispatcher-kafka-%d")
+                        .daemon(true)
+                        .priority(Thread.MAX_PRIORITY)
+                        .build()
+        );
+        ((ScheduledThreadPoolExecutor)taskScheduler).setRemoveOnCancelPolicy(true);
+    }
 
     protected ConfigurationFactoryKafka configFactoryConsumer;
     protected ConfigurationFactoryKafka configFactoryProducer;
@@ -247,7 +251,10 @@ public class EventDispatcherKafka extends AbstractEventDispatcher {
     protected static <T> CompletableFuture<T> executeWithin(CompletableFuture<T> task, Duration timeoutAfter) {
         final CompletableFuture<T> timedOutTask =
                 AbstractEventDispatcher.failAfter(timeoutAfter, EventDispatcherKafka.taskScheduler);
-        return task.applyToEither(timedOutTask, Function.identity());
+        return task.applyToEither(timedOutTask, (t) -> {
+            timedOutTask.cancel(true);
+            return t;
+        });
     }
 
     @Override
@@ -287,7 +294,8 @@ public class EventDispatcherKafka extends AbstractEventDispatcher {
             result = executeWithin(AbstractEventDispatcher.scheduleNow(task, EventDispatcherKafka.taskScheduler),
                     Duration.ofMillis(timeout + 10)) // extra 10ms for the task to spinup
                     .exceptionally((t) -> {
-                        System.err.println("Poll timeout reached! Interrupting the receiving of events...");
+                        System.err.println("Poll timeout of " + (timeout - 10)
+                                + "ms reached! Interrupting the receiving of events...");
                         consumer.wakeup();
                         return null;
                     })
