@@ -6,7 +6,7 @@ module net.uniplovdiv.fmi.cs.vrs.event.serializers {
     requires java.instrument;
     requires org.apache.commons.lang3;
     requires org.apache.commons.codec;
-    requires fast.classpath.scanner;
+    requires io.github.lukehutch.fastclasspathscanner;
     requires gson;
 
     requires net.uniplovdiv.fmi.cs.vrs.event;
