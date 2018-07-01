@@ -189,7 +189,7 @@ public class EventDispatcherKafka extends AbstractEventDispatcher {
             }
         }
 
-        if (this.producer!= null) {
+        if (this.producer != null) {
             Map<MetricName, ? extends Metric> metrics = this.producer.metrics();
 
             for (Iterator<? extends Map.Entry<MetricName, ? extends Metric>> it = metrics.entrySet().iterator();
