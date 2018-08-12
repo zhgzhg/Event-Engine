@@ -80,22 +80,6 @@ public class ClassesIEventScanner {
         }
     }
 
-    /**
-     * A temporary workaround for the inability of the scanner in some cases to retrieve some classes.
-     * @param r Executed if the runtime version is 9 or later.
-     */
-    @Deprecated // REMOVEME
-    private void actIfJava9OrLater(Runnable r) {
-        try {
-            double ver = Double.parseDouble(System.getProperty("java.specification.version"));
-            if (ver >= 9.0 && r != null) {
-                r.run();
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace(System.err);
-        }
-    }
-
     /* Not tested well enough
      * Constructor specifying the class paths from which the classes to be scanned and the packages to be scanned for
      * classes implementing {@link IEvent} interface plus {@link net.uniplovdiv.fmi.cs.vrs.event} package.
@@ -155,12 +139,6 @@ public class ClassesIEventScanner {
                 .loadClasses(true)
                 .forEach(clazz -> foundEventClasses.add((Class<? extends IEvent>) clazz));
 
-        //this.actIfJava9OrLater(() -> { // TODO REMOVEME
-        //    foundEventClasses.add(Event.class);
-        //    foundEventClasses.add(SystemEvent.class);
-        //    foundEventClasses.add(DomainEvent.class);
-        //    foundEventClasses.add(EmergencyEvent.class);
-        //});
         return this.foundEventClasses;
     }
 
