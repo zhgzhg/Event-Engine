@@ -239,7 +239,7 @@
 							<annotationProcessorPath>
 								<groupId>com.github.zhgzhg</groupId>
 								<artifactId>ee-annotations</artifactId>
-								<version>0.1</version>
+								<version>0.2.0</version>
 							</annotationProcessorPath>
 						</annotationProcessorPaths-->
                     </configuration>
