@@ -1,10 +1,10 @@
 package net.uniplovdiv.fmi.cs.vrs.event.serializers.engine;
 
-import io.github.lukehutch.fastclasspathscanner.FastClasspathScanner;
+//import io.github.lukehutch.fastclasspathscanner.FastClasspathScanner;
+import io.github.classgraph.ClassGraph;
 import net.uniplovdiv.fmi.cs.vrs.event.*;
 import net.uniplovdiv.fmi.cs.vrs.event.IEvent;
 
-import java.io.File;
 import java.util.*;
 
 /**
@@ -13,7 +13,7 @@ import java.util.*;
 public class ClassesIEventScanner {
 
     private final String[] packagesToScan;
-    private final FastClasspathScanner fastClasspathScanner;
+    private final ClassGraph classGraphScanner;
     private HashSet<Class<? extends IEvent>> foundEventClasses;
 
     /**
@@ -23,8 +23,11 @@ public class ClassesIEventScanner {
         foundEventClasses = new HashSet<>();
         String mainPackage = IEvent.class.getPackage().getName();
         packagesToScan = new String[] { mainPackage };
-        fastClasspathScanner = new FastClasspathScanner(packagesToScan)
-                .matchClassesImplementing(IEvent.class, matchedClass -> foundEventClasses.add(matchedClass));
+        classGraphScanner = new ClassGraph()
+                .whitelistPackages(mainPackage)
+                .enableAllInfo();
+                //.whitelistPackages()
+                //.matchClassesImplementing(IEvent.class, matchedClass -> foundEventClasses.add(matchedClass));
     }
 
     /**
@@ -43,8 +46,10 @@ public class ClassesIEventScanner {
                 packagesToScan[j] = packages[i];
             }
         }
-        fastClasspathScanner = new FastClasspathScanner(packagesToScan)
-                .matchClassesImplementing(IEvent.class, matchedClass -> foundEventClasses.add(matchedClass));
+        classGraphScanner = new ClassGraph()
+                .whitelistPackages(packagesToScan)
+                .enableAllInfo();
+                //.matchClassesImplementing(IEvent.class, matchedClass -> foundEventClasses.add(matchedClass));
     }
 
     /**
@@ -66,8 +71,10 @@ public class ClassesIEventScanner {
                 packagesToScan[j] = packages[i];
             }
         }
-        fastClasspathScanner = new FastClasspathScanner(packagesToScan)
-                .matchClassesImplementing(IEvent.class, matchedClass -> foundEventClasses.add(matchedClass));
+        classGraphScanner = new ClassGraph()
+                .whitelistPackages(packages)
+                .enableAllInfo();
+                //.matchClassesImplementing(IEvent.class, matchedClass -> foundEventClasses.add(matchedClass));
         if (classes != null && !classes.isEmpty()) {
             classes.forEach(c -> { if (c != null) this.foundEventClasses.add(c); } );
         }
@@ -77,7 +84,7 @@ public class ClassesIEventScanner {
      * A temporary workaround for the inability of the scanner in some cases to retrieve some classes.
      * @param r Executed if the runtime version is 9 or later.
      */
-    @Deprecated
+    @Deprecated // REMOVEME
     private void actIfJava9OrLater(Runnable r) {
         try {
             double ver = Double.parseDouble(System.getProperty("java.specification.version"));
@@ -124,7 +131,7 @@ public class ClassesIEventScanner {
 
             _fastClasspathScanner = _fastClasspathScanner.overrideClasspath(elements);
         }
-        fastClasspathScanner = _fastClasspathScanner
+        classGraphScanner = _fastClasspathScanner
                 .matchClassesImplementing(IEvent.class, matchedClass -> foundEventClasses.add(matchedClass));
     }*/
 
@@ -140,15 +147,20 @@ public class ClassesIEventScanner {
      * Scans the packages and returns the classes that implement {@link IEvent} interface.
      * @return On success nonempty set of data otherwise an empty one.
      */
+    @SuppressWarnings("unchecked")
     public HashSet<Class<? extends IEvent>> scan() {
         this.foundEventClasses.clear();
-        fastClasspathScanner.scan();
-        this.actIfJava9OrLater(() -> {
-            foundEventClasses.add(Event.class);
-            foundEventClasses.add(SystemEvent.class);
-            foundEventClasses.add(DomainEvent.class);
-            foundEventClasses.add(EmergencyEvent.class);
-        });
+        this.classGraphScanner.scan()
+                .getClassesImplementing(IEvent.class.getCanonicalName())
+                .loadClasses(true)
+                .forEach(clazz -> foundEventClasses.add((Class<? extends IEvent>) clazz));
+
+        //this.actIfJava9OrLater(() -> { // TODO REMOVEME
+        //    foundEventClasses.add(Event.class);
+        //    foundEventClasses.add(SystemEvent.class);
+        //    foundEventClasses.add(DomainEvent.class);
+        //    foundEventClasses.add(EmergencyEvent.class);
+        //});
         return this.foundEventClasses;
     }
 

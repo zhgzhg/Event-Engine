@@ -17,7 +17,7 @@
 
     <groupId>com.github.zhgzhg</groupId>
     <artifactId>event-engine</artifactId>
-    <version>0.1</version>
+    <version>0.2.0</version>
     <packaging>pom</packaging>
 
     <distributionManagement>
@@ -42,22 +42,22 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <event-engine-version>0.1</event-engine-version>
-        <ee-annotations-version>0.1</ee-annotations-version>
-        <ee-dispatchers-version>0.1</ee-dispatchers-version>
-        <ee-events-version>0.1</ee-events-version>
-        <ee-serializers-version>0.1</ee-serializers-version>
+        <event-engine-version>0.2.0</event-engine-version>
+        <ee-annotations-version>0.2.0</ee-annotations-version>
+        <ee-dispatchers-version>0.2.0</ee-dispatchers-version>
+        <ee-events-version>0.2.0</ee-events-version>
+        <ee-serializers-version>0.2.0</ee-serializers-version>
 
         <ee-j9p-workarounds-version>0.1</ee-j9p-workarounds-version>
 
         <commons-lang3-version>3.7</commons-lang3-version>
         <commons-codec-version>1.11</commons-codec-version>
         <gson-version>2.8.5</gson-version>
-        <fast-classpath-scanner-version>3.1.12</fast-classpath-scanner-version>
+        <classgraph-version>4.0.6</classgraph-version>
         <classmate-version>1.4.0</classmate-version>
-        <activemq-client-version>5.15.4</activemq-client-version>
+        <activemq-client-version>5.15.5</activemq-client-version>
         <activemq-client-geronimo-spec-version>1.1.1</activemq-client-geronimo-spec-version>
-        <kafka-clients-version>1.1.1</kafka-clients-version>
+        <kafka-clients-version>2.0.0</kafka-clients-version>
 
         <junit-jupiter-engine-version>5.2.0</junit-jupiter-engine-version>
         <junit-jupiter-api-version>5.2.0</junit-jupiter-api-version>
@@ -65,7 +65,7 @@
         <junit-platform-surefire-provider-version>1.2.0</junit-platform-surefire-provider-version>
         <apiguardian-api-version>1.0.0</apiguardian-api-version>
 
-        <maven-compiler-plugin-version>3.7.0</maven-compiler-plugin-version>
+        <maven-compiler-plugin-version>3.8.0</maven-compiler-plugin-version>
         <maven-surefire-plugin-version>2.22.0</maven-surefire-plugin-version>
         <maven-javadoc-plugin-version>3.0.1</maven-javadoc-plugin-version>
         <maven-source-plugin-version>3.0.1</maven-source-plugin-version>
@@ -131,9 +131,9 @@
                 <version>${classmate-version}</version>
             </dependency>
             <dependency>
-                <groupId>io.github.lukehutch</groupId>
-                <artifactId>fast-classpath-scanner</artifactId>
-                <version>${fast-classpath-scanner-version}</version>
+                <groupId>io.github.classgraph</groupId>
+                <artifactId>classgraph</artifactId>
+                <version>${classgraph-version}</version>
             </dependency>
 
             <dependency>
@@ -230,6 +230,7 @@
                         <source>${maven-compiler-plugin-source-version}</source>
                         <target>${maven-compiler-plugin-target-version}</target>
                         <showWarnings>true</showWarnings>
+                        <compilerArgument>-Xlint:unchecked</compilerArgument>
                         <!--excludes>
                             <exclude>${module-info-java-file}</exclude>
                         </excludes-->

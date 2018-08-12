@@ -1,0 +1,3 @@
+<component name="DependencyValidationManager">
+  <scope name="scope-ee-all" pattern="src[ee-annotations]:*..*||src[ee-events]:*..*||src[ee-serializers]:*..*||src[ee-dispatchers]:*..*" />
+</component>

@@ -112,7 +112,8 @@ public interface IEvent extends Comparable<IEvent> {
      */
     default ZonedDateTime getZonedDateTime() {
         long timestampMs = getTimestampMs();
-        LocalDateTime ldt = LocalDateTime.ofEpochSecond((int)(timestampMs / 1000), (int)(timestampMs % 1000), ZoneOffset.UTC);
+        LocalDateTime ldt = LocalDateTime.ofEpochSecond(
+                (int)(timestampMs / 1000), (int)(timestampMs % 1000), ZoneOffset.UTC);
         return ldt.toInstant(ZoneOffset.UTC).atZone(ZoneId.systemDefault());
     }
 
@@ -359,8 +360,7 @@ public interface IEvent extends Comparable<IEvent> {
      * @throws NullPointerException If the corresponding dynamicParameters are null.
      * @return The identifier of the added events, based on the identifier inside events parameter.
      */
-    default Long addSubEvent(IEvent event) throws UnsupportedOperationException, ClassCastException,
-            IllegalArgumentException, NullPointerException {
+    default Long addSubEvent(IEvent event) {
         Long eid = event.getId();
         addSubEvent(eid, event);
         return eid;
@@ -375,8 +375,7 @@ public interface IEvent extends Comparable<IEvent> {
      * @throws IllegalArgumentException If identifier collision or bad arguments are supplied.
      * @throws NullPointerException If the corresponding dynamicParameters are null.
      */
-    void addSubEvent(Long keyId, IEvent event) throws UnsupportedOperationException, ClassCastException,
-            IllegalArgumentException, NullPointerException;
+    void addSubEvent(Long keyId, IEvent event);
 
     /**
      * Removes an existing subevent from the current events.

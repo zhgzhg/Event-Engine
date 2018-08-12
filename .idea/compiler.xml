@@ -20,22 +20,31 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <processorPath useClasspath="false">
+        <processorPath>
           <entry name="$PROJECT_DIR$/ee-annotations/pom.xml" />
           <entry name="$MAVEN_REPOSITORY$/org/apache/commons/commons-lang3/3.7/commons-lang3-3.7.jar" />
         </processorPath>
         <module name="annotations" />
         <module name="dispatchers" />
         <module name="ee-all" />
-        <module name="ee-dispatchers" />
-        <module name="ee-events" />
-        <module name="ee-serializers" />
         <module name="event-annotations" />
         <module name="event-dispatchers" />
         <module name="event-events" />
         <module name="event-serializers" />
         <module name="events" />
         <module name="serializers" />
+      </profile>
+      <profile name="Annotation profile for Event Engine" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="false">
+          <entry name="$PROJECT_DIR$/ee-annotations/target/classes" />
+          <entry name="$MAVEN_REPOSITORY$/org/apache/commons/commons-lang3/3.7/commons-lang3-3.7.jar" />
+        </processorPath>
+        <module name="ee-dispatchers" />
+        <module name="ee-events" />
+        <module name="ee-serializers" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel target="1.8">
@@ -49,5 +58,13 @@
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_STRING" value="-Xlint:unchecked" />
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="ee-all" options="-Xlint:unchecked" />
+      <module name="ee-annotations" options="-Xlint:unchecked" />
+      <module name="ee-dispatchers" options="-Xlint:unchecked" />
+      <module name="ee-events" options="-Xlint:unchecked" />
+      <module name="ee-serializers" options="-Xlint:unchecked" />
+      <module name="event-engine" options="" />
+    </option>
   </component>
 </project>

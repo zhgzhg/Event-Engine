@@ -6,7 +6,7 @@ module net.uniplovdiv.fmi.cs.vrs.event.dispatchers {
     requires java.naming;
 
     requires gson;
-    requires io.github.lukehutch.fastclasspathscanner;
+    requires io.github.classgraph;
     requires org.apache.commons.lang3;
     requires kafka.clients;
     requires activemq.client;

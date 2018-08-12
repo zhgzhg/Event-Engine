@@ -6,7 +6,7 @@
       <element id="module-output" name="ee-serializers" />
       <element id="extracted-dir" path="$MAVEN_REPOSITORY$/commons-codec/commons-codec/1.11/commons-codec-1.11.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/google/code/gson/gson/2.8.5/gson-2.8.5.jar" path-in-jar="/" />
-      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/io/github/lukehutch/fast-classpath-scanner/3.1.12/fast-classpath-scanner-3.1.12.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/io/github/classgraph/classgraph/4.0.6/classgraph-4.0.6.jar" path-in-jar="/" />
     </root>
   </artifact>
 </component>

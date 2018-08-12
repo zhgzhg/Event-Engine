@@ -633,7 +633,7 @@ public class Event implements IEvent, Serializable {
      * @throws NullPointerException If event parameter is null.
      */
     @Override
-    public int compareTo(IEvent event) throws NullPointerException {
+    public int compareTo(IEvent event) {
         if (event != null) {
             if (this.priority < event.getPriority()) {
                 return -1;
@@ -1062,8 +1062,7 @@ public class Event implements IEvent, Serializable {
     }
 
     @Override
-    public void addSubEvent(Long keyId, IEvent event) throws UnsupportedOperationException, ClassCastException,
-            IllegalArgumentException, NullPointerException {
+    public void addSubEvent(Long keyId, IEvent event) {
         if (this == event) {
             throw new IllegalArgumentException("Infinite recursion of event having itself as a subevent!");
         }
@@ -1082,19 +1081,11 @@ public class Event implements IEvent, Serializable {
 
     @Override
     public IEvent removeSubEvent(Long id) {
-        if (this.subEvents == null) {
-            this.subEvents = constructSubEventsStructure();
-            return null;
-        }
-        return this.subEvents.remove(id);
+        return (this.subEvents != null ? this.subEvents.remove(id) : null);
     }
 
     @Override
     public IEvent getSubEvent(Long id) {
-        if (this.subEvents == null) {
-            this.subEvents = constructSubEventsStructure();
-            return null;
-        }
-        return this.subEvents.get(id);
+        return (this.subEvents != null ? this.subEvents.get(id) : null);
     }
 }

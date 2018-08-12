@@ -5,7 +5,7 @@
     <parent>
         <groupId>com.github.zhgzhg</groupId>
         <artifactId>event-engine</artifactId>
-        <version>0.1</version>
+        <version>0.2.0</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -14,7 +14,7 @@
     <description>Provides serializers and deserializers for VRS events.</description>
 
     <artifactId>ee-serializers</artifactId>
-    <version>0.1</version>
+    <version>0.2.0</version>
 
     <dependencies>
         <dependency>
@@ -46,8 +46,8 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>io.github.lukehutch</groupId>
-            <artifactId>fast-classpath-scanner</artifactId>
+            <groupId>io.github.classgraph</groupId>
+            <artifactId>classgraph</artifactId>
             <scope>compile</scope>
         </dependency>
 

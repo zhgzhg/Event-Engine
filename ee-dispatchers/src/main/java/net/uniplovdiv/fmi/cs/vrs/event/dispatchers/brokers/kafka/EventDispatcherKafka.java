@@ -30,7 +30,7 @@ import java.util.function.Function;
  */
 public class EventDispatcherKafka extends AbstractEventDispatcher {
     protected static final ScheduledExecutorService taskScheduler;
-    static {
+    static { // CHANGEME perhaps delay this initialization. Maybe via executeWithin.
         taskScheduler = Executors.newScheduledThreadPool(
                 Math.min(6, Runtime.getRuntime().availableProcessors()),
                 new BasicThreadFactory.Builder()
@@ -259,52 +259,31 @@ public class EventDispatcherKafka extends AbstractEventDispatcher {
 
     @Override
     protected List<DataPacket> doActualReceive(long timeout) {
-        Callable<List<DataPacket>> task = () -> {
-            ConsumerRecords<String, DataPacket> consumerRecords = null;
-            try {
-                // Timeout documentation is misleading. It's for any data in the buffer previously. The actual timeout
-                // needs to be tweaked via request.timeout.ms, session.timeout.ms and fetch.max.wait.ms
-                // Also poll() always blocks indefinitely if there's no connection.
-                consumerRecords = consumer.poll(timeout);
-            } catch (WakeupException we) {
-                we.printStackTrace(System.err);
-            }
-
-            if (consumerRecords == null || consumerRecords.isEmpty()) return null;
-
-            List<DataPacket> result = new ArrayList<>(consumerRecords.count());
-
-            for (ConsumerRecord<String, DataPacket> cr : consumerRecords) {
-                // prevent receiving data sent by us with more strict approach based on metadata inside the record
-                if (this.doNotReceiveEventsFromSameSource) {
-                    Header h = cr.headers().lastHeader(this.clientIdHeader.key());
-                    if (h != null && h.value() != null
-                            && Arrays.equals(h.value(), this.clientIdHeader.value())) {
-                        continue;
-                    }
-                }
-                result.add(cr.value());
-            }
-
-            return (result.isEmpty() ? null : result);
-        };
-
-        List<DataPacket> result = null;
+        ConsumerRecords<String, DataPacket> consumerRecords = null;
         try {
-            result = executeWithin(AbstractEventDispatcher.scheduleNow(task, EventDispatcherKafka.taskScheduler),
-                    Duration.ofMillis(timeout + 10)) // extra 10ms for the task to spinup
-                    .exceptionally((t) -> {
-                        System.err.println("Poll timeout of " + (timeout - 10)
-                                + "ms reached! Interrupting the receiving of events...");
-                        consumer.wakeup();
-                        return null;
-                    })
-                    .get();
-        } catch (Exception ex) {
-            ex.printStackTrace(System.err);
+            // Since Kafka 2.0.0 poll() always times out as expected
+            consumerRecords = consumer.poll(Duration.ofMillis(timeout));
+        } catch (WakeupException we) {
+            we.printStackTrace(System.err);
         }
 
-        return result;
+        if (consumerRecords == null || consumerRecords.isEmpty()) return null;
+
+        List<DataPacket> result = new ArrayList<>(consumerRecords.count());
+
+        for (ConsumerRecord<String, DataPacket> cr : consumerRecords) {
+            // prevent receiving data sent by us with more strict approach based on metadata inside the record
+            if (this.doNotReceiveEventsFromSameSource) {
+                Header h = cr.headers().lastHeader(this.clientIdHeader.key());
+                if (h != null && h.value() != null
+                        && Arrays.equals(h.value(), this.clientIdHeader.value())) {
+                    continue;
+                }
+            }
+            result.add(cr.value());
+        }
+
+        return (result.isEmpty() ? null : result);
     }
 
     @Override
@@ -324,7 +303,7 @@ public class EventDispatcherKafka extends AbstractEventDispatcher {
     @Override
     public void close() {
         if (this.consumer != null) {
-            this.consumer.close(60, TimeUnit.SECONDS);
+            this.consumer.close(Duration.ofSeconds(60));
             this.consumer = null;
         }
         if (this.producer != null) {
