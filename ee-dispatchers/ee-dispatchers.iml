@@ -23,7 +23,7 @@
     <orderEntry type="library" scope="TEST" name="org.apiguardian:apiguardian-api:1.0.0" level="project" />
     <orderEntry type="library" exported="" name="org.apache.activemq:activemq-client:5.15.5" level="project" />
     <orderEntry type="library" scope="TEST" name="org.junit.jupiter:junit-jupiter-api:5.2.0" level="project" />
-    <orderEntry type="library" name="org.apache.commons:commons-lang3:3.7" level="project" />
+    <orderEntry type="library" name="org.apache.commons:commons-lang3:3.8" level="project" />
     <orderEntry type="module" module-name="ee-annotations" />
     <orderEntry type="module" module-name="ee-events" />
     <orderEntry type="library" name="Maven: com.fasterxml:classmate:1.4.0" level="project" />
@@ -31,7 +31,7 @@
     <orderEntry type="library" name="Maven: com.google.code.gson:gson:2.8.5" level="project" />
     <orderEntry type="library" name="Maven: commons-codec:commons-codec:1.11" level="project" />
     <orderEntry type="library" name="Maven: io.github.classgraph:classgraph:4.0.6" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.commons:commons-lang3:3.7" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.commons:commons-lang3:3.8" level="project" />
     <orderEntry type="library" name="Maven: org.apache.kafka:kafka-clients:2.0.0" level="project" />
     <orderEntry type="library" name="Maven: org.lz4:lz4-java:1.4.1" level="project" />
     <orderEntry type="library" name="Maven: org.xerial.snappy:snappy-java:1.1.7.1" level="project" />

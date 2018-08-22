@@ -11,7 +11,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="org.apache.commons:commons-lang3:3.7" level="project" />
+    <orderEntry type="library" name="org.apache.commons:commons-lang3:3.8" level="project" />
     <orderEntry type="library" scope="TEST" name="org.junit.jupiter:junit-jupiter-engine:5.2.0" level="project" />
     <orderEntry type="library" scope="TEST" name="org.junit.platform:junit-platform-launcher:1.2.0" level="project" />
     <orderEntry type="library" name="com.fasterxml:classmate:1.4.0" level="project" />
