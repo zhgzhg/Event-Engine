@@ -1,5 +1,6 @@
 package net.uniplovdiv.fmi.cs.vrs.event.dispatchers.brokers.kafka;
 
+import net.uniplovdiv.fmi.cs.vrs.event.Event;
 import net.uniplovdiv.fmi.cs.vrs.event.IEvent;
 import net.uniplovdiv.fmi.cs.vrs.event.dispatchers.brokers.AbstractBrokerConfigFactory;
 import net.uniplovdiv.fmi.cs.vrs.event.dispatchers.brokers.AbstractEventDispatcher;
@@ -14,6 +15,8 @@ import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.Metric;
 import org.apache.kafka.common.MetricName;
+import org.apache.kafka.common.errors.AuthenticationException;
+import org.apache.kafka.common.errors.AuthorizationException;
 import org.apache.kafka.common.errors.WakeupException;
 import org.apache.kafka.common.header.Header;
 import org.apache.kafka.common.header.internals.RecordHeader;
@@ -50,6 +53,9 @@ public class EventDispatcherKafka extends AbstractEventDispatcher {
 
     // create meta header used when kafka sends messages to identify who is the sender
     protected final Header clientIdHeader;
+
+    // used as a dummy parameter when listing partitions for topic
+    private final String SAMPLE_EVENT_TOPIC_NAME = new Event().getCategory();
 
     /**
      * Constructor - the most complete one.
@@ -169,6 +175,16 @@ public class EventDispatcherKafka extends AbstractEventDispatcher {
         final MutableBoolean result = new MutableBoolean(false);
 
         if (this.consumer != null) {
+            try {
+                // We don't care for the topic. Just force establishing a connection if it wasn't established yet.
+                this.consumer.partitionsFor(SAMPLE_EVENT_TOPIC_NAME);
+            } catch (AuthenticationException | AuthorizationException ex) {
+                // There's certainly connectivity problem
+                return false;
+            } catch (Exception ex) {
+                // We're not quite sure in this or the other positive outcomes. Let's read the metrics instead.
+            }
+
             Map<MetricName, ? extends Metric> metrics = this.consumer.metrics();
 
             for (Iterator<? extends Map.Entry<MetricName, ? extends Metric>> it = metrics.entrySet().iterator();
@@ -190,6 +206,16 @@ public class EventDispatcherKafka extends AbstractEventDispatcher {
         }
 
         if (this.producer != null) {
+            try {
+                // We don't care for the topic. Just force establishing a connection if it wasn't established yet.
+                this.producer.partitionsFor(SAMPLE_EVENT_TOPIC_NAME);
+            } catch (AuthenticationException | AuthorizationException ex) {
+                // There's certainly connectivity problem
+                return false;
+            } catch (Exception ex) {
+                // We're not quite sure in this or the other positive outcomes. Let's read the metrics instead.
+            }
+
             Map<MetricName, ? extends Metric> metrics = this.producer.metrics();
 
             for (Iterator<? extends Map.Entry<MetricName, ? extends Metric>> it = metrics.entrySet().iterator();
