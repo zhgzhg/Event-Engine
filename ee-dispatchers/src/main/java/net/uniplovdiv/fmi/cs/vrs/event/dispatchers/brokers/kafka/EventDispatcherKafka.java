@@ -13,10 +13,6 @@ import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
-import org.apache.kafka.common.Metric;
-import org.apache.kafka.common.MetricName;
-import org.apache.kafka.common.errors.AuthenticationException;
-import org.apache.kafka.common.errors.AuthorizationException;
 import org.apache.kafka.common.errors.WakeupException;
 import org.apache.kafka.common.header.Header;
 import org.apache.kafka.common.header.internals.RecordHeader;
@@ -25,7 +21,6 @@ import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.*;
-import java.util.function.Function;
 
 
 /**
@@ -172,75 +167,29 @@ public class EventDispatcherKafka extends AbstractEventDispatcher {
 
     @Override
     public boolean isConnected() {
-        final MutableBoolean result = new MutableBoolean(false);
-
         if (this.consumer != null) {
             try {
-                // We don't care for the topic. Just force establishing a connection if it wasn't established yet.
-                this.consumer.partitionsFor(SAMPLE_EVENT_TOPIC_NAME);
-            } catch (AuthenticationException | AuthorizationException ex) {
-                // There's certainly connectivity problem
-                return false;
+                // We don't care for the topics. Just force establishing a connection if it hasn't been established yet.
+                this.consumer.listTopics();
             } catch (Exception ex) {
-                // We're not quite sure in this or the other positive outcomes. Let's read the metrics instead.
-            }
-
-            Map<MetricName, ? extends Metric> metrics = this.consumer.metrics();
-
-            for (Iterator<? extends Map.Entry<MetricName, ? extends Metric>> it = metrics.entrySet().iterator();
-                 it.hasNext(); ) {
-                Map.Entry<MetricName, ? extends Metric> ent = it.next();
-                MetricName key = ent.getKey();
-                if (key.name().equals("connection-count") && key.group().equals("consumer-metrics")) {
-                    try {
-                        double res = Double.parseDouble(ent.getValue().metricValue().toString());
-                        result.setValue(res > 0);
-                    } catch (Exception e) {
-                        result.setFalse();
-                        e.printStackTrace(System.err);
-                    } finally {
-                        break;
-                    }
-                }
+                ex.printStackTrace(System.err);
+                return false;
             }
         }
 
         if (this.producer != null) {
             try {
-                // We don't care for the topic. Just force establishing a connection if it wasn't established yet.
+                // We don't care for the topic. Just force establishing a connection if it hasn't been established yet.
                 this.producer.partitionsFor(SAMPLE_EVENT_TOPIC_NAME);
-            } catch (AuthenticationException | AuthorizationException ex) {
-                // There's certainly connectivity problem
-                return false;
             } catch (Exception ex) {
-                // We're not quite sure in this or the other positive outcomes. Let's read the metrics instead.
+                ex.printStackTrace(System.err);
+                return false;
             }
-
-            Map<MetricName, ? extends Metric> metrics = this.producer.metrics();
-
-            for (Iterator<? extends Map.Entry<MetricName, ? extends Metric>> it = metrics.entrySet().iterator();
-                 it.hasNext(); ) {
-                Map.Entry<MetricName, ? extends Metric> ent = it.next();
-                MetricName key = ent.getKey();
-                if (key.name().equals("connection-count") && key.group().equals("producer-metrics")) {
-                    try {
-                        double res = Double.parseDouble(ent.getValue().metricValue().toString());
-                        if (this.consumer != null) {
-                            result.setValue(result.getValue().booleanValue() & (res > 0));
-                        } else {
-                            result.setValue(res > 0);
-                        }
-                    } catch (Exception e) {
-                        result.setFalse();
-                        e.printStackTrace(System.err);
-                    } finally {
-                        break;
-                    }
-                }
-            }
+        } else if (this.consumer == null) {
+            return false;
         }
 
-        return result.booleanValue();
+        return true;
     }
 
     @Override
