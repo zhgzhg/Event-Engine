@@ -11,7 +11,7 @@ Requirements
 ------------
 
 * Java 8+
-* Maven 3.3.9+ or IntelliJ IDEA 2017.3.1+
+* Maven 3.3.9+ or IntelliJ IDEA 2018.1+
 
 
 How to Compile
