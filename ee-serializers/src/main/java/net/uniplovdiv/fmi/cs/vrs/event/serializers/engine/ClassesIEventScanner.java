@@ -25,6 +25,7 @@ public class ClassesIEventScanner {
         packagesToScan = new String[] { mainPackage };
         classGraphScanner = new ClassGraph()
                 .whitelistPackages(mainPackage)
+                .enableExternalClasses()
                 .enableAllInfo();
                 //.whitelistPackages()
                 //.matchClassesImplementing(IEvent.class, matchedClass -> foundEventClasses.add(matchedClass));
@@ -48,6 +49,7 @@ public class ClassesIEventScanner {
         }
         classGraphScanner = new ClassGraph()
                 .whitelistPackages(packagesToScan)
+                .enableExternalClasses()
                 .enableAllInfo();
                 //.matchClassesImplementing(IEvent.class, matchedClass -> foundEventClasses.add(matchedClass));
     }
@@ -73,6 +75,7 @@ public class ClassesIEventScanner {
         }
         classGraphScanner = new ClassGraph()
                 .whitelistPackages(packages)
+                .enableExternalClasses()
                 .enableAllInfo();
                 //.matchClassesImplementing(IEvent.class, matchedClass -> foundEventClasses.add(matchedClass));
         if (classes != null && !classes.isEmpty()) {
