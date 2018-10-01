@@ -40,7 +40,6 @@
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="false">
           <entry name="$PROJECT_DIR$/ee-annotations/target/classes" />
-          <entry name="$MAVEN_REPOSITORY$/org/apache/commons/commons-lang3/3.8/commons-lang3-3.8.jar" />
           <entry name="$MAVEN_REPOSITORY$/org/apache/commons/commons-lang3/3.8.1/commons-lang3-3.8.1.jar" />
         </processorPath>
         <module name="ee-dispatchers" />
