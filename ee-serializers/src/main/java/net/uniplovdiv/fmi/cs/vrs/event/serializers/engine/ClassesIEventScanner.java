@@ -2,6 +2,7 @@ package net.uniplovdiv.fmi.cs.vrs.event.serializers.engine;
 
 //import io.github.lukehutch.fastclasspathscanner.FastClasspathScanner;
 import io.github.classgraph.ClassGraph;
+import io.github.classgraph.ScanResult;
 import net.uniplovdiv.fmi.cs.vrs.event.*;
 import net.uniplovdiv.fmi.cs.vrs.event.IEvent;
 
@@ -137,10 +138,11 @@ public class ClassesIEventScanner {
     @SuppressWarnings("unchecked")
     public HashSet<Class<? extends IEvent>> scan() {
         this.foundEventClasses.clear();
-        this.classGraphScanner.scan()
-                .getClassesImplementing(IEvent.class.getCanonicalName())
-                .loadClasses(true)
-                .forEach(clazz -> foundEventClasses.add((Class<? extends IEvent>) clazz));
+        try (ScanResult results = this.classGraphScanner.scan()) {
+            results.getClassesImplementing(IEvent.class.getCanonicalName())
+                    .loadClasses(true)
+                    .forEach(clazz -> foundEventClasses.add((Class<? extends IEvent>) clazz));
+        }
 
         return this.foundEventClasses;
     }
