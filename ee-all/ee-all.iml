@@ -19,7 +19,7 @@
     <orderEntry type="module" module-name="ee-serializers" />
     <orderEntry type="library" name="Maven: com.google.code.gson:gson:2.8.5" level="project" />
     <orderEntry type="library" name="Maven: commons-codec:commons-codec:1.11" level="project" />
-    <orderEntry type="library" name="Maven: io.github.classgraph:classgraph:4.2.12" level="project" />
+    <orderEntry type="library" name="Maven: io.github.classgraph:classgraph:4.4.1" level="project" />
     <orderEntry type="module" module-name="ee-dispatchers" />
     <orderEntry type="library" name="Maven: org.apache.kafka:kafka-clients:2.0.0" level="project" />
     <orderEntry type="library" name="Maven: org.lz4:lz4-java:1.4.1" level="project" />
