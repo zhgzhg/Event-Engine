@@ -20,6 +20,8 @@
     <version>0.2.0</version>
     <packaging>pom</packaging>
 
+    <url>https://github.com/zhgzhg/Event-Engine</url>
+
     <distributionManagement>
         <repository>
             <id>bintray-zhgzhg-Event-Engine</id>
