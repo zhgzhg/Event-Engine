@@ -50,7 +50,7 @@
         <ee-events-version>0.2.0</ee-events-version>
         <ee-serializers-version>0.2.0</ee-serializers-version>
 
-        <ee-j9p-workarounds-version>0.1</ee-j9p-workarounds-version>
+        <ee-j9p-workarounds-version>0.2.0</ee-j9p-workarounds-version>
 
         <commons-lang3-version>3.8.1</commons-lang3-version>
         <commons-codec-version>1.11</commons-codec-version>
