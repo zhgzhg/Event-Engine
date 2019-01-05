@@ -1,7 +1,7 @@
 Event Engine
 ============
 
-![build status badge](https://travis-ci.org/zhgzhg/Event-Engine.svg?branch=master "Build Status") [ ![Download](https://api.bintray.com/packages/zhgzhg/Event-Engine/Event-Engine/images/download.svg "Download Latest Version") ](https://bintray.com/zhgzhg/Event-Engine/Event-Engine/0.2.0) 
+![build status badge](https://travis-ci.org/zhgzhg/Event-Engine.svg?branch=master "Build Status") [ ![Download](https://api.bintray.com/packages/zhgzhg/Event-Engine/Event-Engine/images/download.svg "Download Latest Version") ](https://bintray.com/zhgzhg/Event-Engine/Event-Engine/0.2.1) 
 
 An event engine developed for the Virtual Referent Space (VRS).
 The project is licensed under Apache License 2.0. You may find the terms in file named "LICENSE" in this directory.

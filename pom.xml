@@ -17,7 +17,7 @@
 
     <groupId>com.github.zhgzhg</groupId>
     <artifactId>event-engine</artifactId>
-    <version>0.2.0</version>
+    <version>0.2.1</version>
     <packaging>pom</packaging>
 
     <url>https://github.com/zhgzhg/Event-Engine</url>
@@ -44,33 +44,33 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <event-engine-version>0.2.0</event-engine-version>
-        <ee-annotations-version>0.2.0</ee-annotations-version>
-        <ee-dispatchers-version>0.2.0</ee-dispatchers-version>
-        <ee-events-version>0.2.0</ee-events-version>
-        <ee-serializers-version>0.2.0</ee-serializers-version>
+        <event-engine-version>0.2.1</event-engine-version>
+        <ee-annotations-version>0.2.1</ee-annotations-version>
+        <ee-dispatchers-version>0.2.1</ee-dispatchers-version>
+        <ee-events-version>0.2.1</ee-events-version>
+        <ee-serializers-version>0.2.1</ee-serializers-version>
 
         <ee-j9p-workarounds-version>0.2.0</ee-j9p-workarounds-version>
 
         <commons-lang3-version>3.8.1</commons-lang3-version>
         <commons-codec-version>1.11</commons-codec-version>
         <gson-version>2.8.5</gson-version>
-        <classgraph-version>4.4.12</classgraph-version>
+        <classgraph-version>4.6.12</classgraph-version>
         <classmate-version>1.4.0</classmate-version>
-        <activemq-client-version>5.15.7</activemq-client-version>
+        <activemq-client-version>5.15.8</activemq-client-version>
         <activemq-client-geronimo-spec-version>1.1.1</activemq-client-geronimo-spec-version>
         <kafka-clients-version>2.1.0</kafka-clients-version>
 
-        <junit-jupiter-engine-version>5.3.1</junit-jupiter-engine-version>
-        <junit-jupiter-api-version>5.3.1</junit-jupiter-api-version>
-        <junit-platform-launcher-version>1.3.1</junit-platform-launcher-version>
+        <junit-jupiter-engine-version>5.3.2</junit-jupiter-engine-version>
+        <junit-jupiter-api-version>5.3.2</junit-jupiter-api-version>
+        <junit-platform-launcher-version>1.3.2</junit-platform-launcher-version>
         <apiguardian-api-version>1.0.0</apiguardian-api-version>
 
         <maven-compiler-plugin-version>3.8.0</maven-compiler-plugin-version>
         <maven-surefire-plugin-version>2.22.1</maven-surefire-plugin-version>
         <maven-javadoc-plugin-version>3.0.1</maven-javadoc-plugin-version>
         <maven-source-plugin-version>3.0.1</maven-source-plugin-version>
-        <maven-jar-plugin-version>3.1.0</maven-jar-plugin-version>
+        <maven-jar-plugin-version>3.1.1</maven-jar-plugin-version>
         <maven-shade-plugin-version>3.2.1</maven-shade-plugin-version>
         <maven-clean-plugin-version>3.1.0</maven-clean-plugin-version>
         <maven-resources-plugin-version>3.1.0</maven-resources-plugin-version>
