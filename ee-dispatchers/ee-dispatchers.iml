@@ -17,23 +17,23 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" exported="" name="org.apache.kafka:kafka-clients:2.1.0" level="project" />
-    <orderEntry type="library" scope="TEST" name="org.junit.jupiter:junit-jupiter-engine:5.3.2" level="project" />
-    <orderEntry type="library" scope="TEST" name="org.junit.platform:junit-platform-launcher:1.3.2" level="project" />
+    <orderEntry type="library" exported="" name="org.apache.kafka:kafka-clients:2.1.1" level="project" />
+    <orderEntry type="library" scope="TEST" name="org.junit.jupiter:junit-jupiter-engine:5.4.0" level="project" />
+    <orderEntry type="library" scope="TEST" name="org.junit.platform:junit-platform-launcher:1.4.0" level="project" />
     <orderEntry type="library" scope="TEST" name="org.apiguardian:apiguardian-api:1.0.0" level="project" />
     <orderEntry type="library" exported="" name="org.apache.activemq:activemq-client:5.15.8" level="project" />
-    <orderEntry type="library" scope="TEST" name="org.junit.jupiter:junit-jupiter-api:5.3.2" level="project" />
+    <orderEntry type="library" scope="TEST" name="org.junit.jupiter:junit-jupiter-api:5.4.0" level="project" />
     <orderEntry type="library" name="org.apache.commons:commons-lang3:3.8.1" level="project" />
     <orderEntry type="module" module-name="ee-annotations" />
     <orderEntry type="module" module-name="ee-events" />
     <orderEntry type="library" name="Maven: com.fasterxml:classmate:1.4.0" level="project" />
     <orderEntry type="module" module-name="ee-serializers" />
     <orderEntry type="library" name="Maven: com.google.code.gson:gson:2.8.5" level="project" />
-    <orderEntry type="library" name="Maven: commons-codec:commons-codec:1.11" level="project" />
-    <orderEntry type="library" name="Maven: io.github.classgraph:classgraph:4.6.12" level="project" />
+    <orderEntry type="library" name="Maven: commons-codec:commons-codec:1.12" level="project" />
+    <orderEntry type="library" name="Maven: io.github.classgraph:classgraph:4.8.5" level="project" />
     <orderEntry type="library" name="Maven: org.apache.commons:commons-lang3:3.8.1" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.kafka:kafka-clients:2.1.0" level="project" />
-    <orderEntry type="library" name="Maven: com.github.luben:zstd-jni:1.3.5-4" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.kafka:kafka-clients:2.1.1" level="project" />
+    <orderEntry type="library" name="Maven: com.github.luben:zstd-jni:1.3.7-1" level="project" />
     <orderEntry type="library" name="Maven: org.lz4:lz4-java:1.5.0" level="project" />
     <orderEntry type="library" name="Maven: org.xerial.snappy:snappy-java:1.1.7.2" level="project" />
     <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.7.25" level="project" />
@@ -42,12 +42,12 @@
     <orderEntry type="library" name="Maven: org.fusesource.hawtbuf:hawtbuf:1.11" level="project" />
     <orderEntry type="library" name="Maven: org.apache.geronimo.specs:geronimo-j2ee-management_1.1_spec:1.0.1" level="project" />
     <orderEntry type="library" name="Maven: com.github.zhgzhg:event-engine-j9p-workarounds:0.2.0" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: org.junit.jupiter:junit-jupiter-api:5.3.2" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.junit.jupiter:junit-jupiter-api:5.4.0" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.opentest4j:opentest4j:1.1.1" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: org.junit.platform:junit-platform-commons:1.3.2" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: org.junit.jupiter:junit-jupiter-engine:5.3.2" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: org.junit.platform:junit-platform-engine:1.3.2" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: org.junit.platform:junit-platform-launcher:1.3.2" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.junit.platform:junit-platform-commons:1.4.0" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.junit.jupiter:junit-jupiter-engine:5.4.0" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.junit.platform:junit-platform-engine:1.4.0" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.junit.platform:junit-platform-launcher:1.4.0" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.apiguardian:apiguardian-api:1.0.0" level="project" />
   </component>
 </module>

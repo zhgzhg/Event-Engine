@@ -5,7 +5,7 @@
     <parent>
         <groupId>com.github.zhgzhg</groupId>
         <artifactId>event-engine</artifactId>
-        <version>0.2.1</version>
+        <version>0.2.2</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -14,7 +14,7 @@
     <description>Contains all of the Event Engine's modules.</description>
 
     <artifactId>ee-all</artifactId>
-    <version>0.2.1</version>
+    <version>0.2.2</version>
 
     <dependencies>
         <dependency>
