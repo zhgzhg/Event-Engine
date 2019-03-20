@@ -1,7 +1,7 @@
 Event Engine
 ============
 
-![build status badge](https://travis-ci.org/zhgzhg/Event-Engine.svg?branch=master "Build Status") [ ![Download](https://api.bintray.com/packages/zhgzhg/Event-Engine/Event-Engine/images/download.svg "Download Event Engine") ](https://bintray.com/zhgzhg/Event-Engine/Event-Engine/0.2.2) 
+![build status badge](https://travis-ci.org/zhgzhg/Event-Engine.svg?branch=master "Build Status") [ ![Download](https://api.bintray.com/packages/zhgzhg/Event-Engine/Event-Engine/images/download.svg "Download Event Engine") ](https://bintray.com/zhgzhg/Event-Engine/Event-Engine/0.2.3) 
 
 An event engine developed for the Virtual Referent Space (VRS).
 The project is licensed under Apache License 2.0. You may find the terms in file named "LICENSE" in this directory.
@@ -61,4 +61,4 @@ version during imports and runs. The environment variable JAVA_HOME might be man
 JDK versions, in order to make sure that maven javadoc plugin is using the correct JRE (see below).
 
 Event Engine relies on not modularized yet dependencies. Migrating to Java 9+ may cause problems.
-Compilation for Java 9+ with Maven will succeed except for the javadoc generation.
+Compilation for Java 9+ with Maven will succeed, but the javadoc generation might fail.
