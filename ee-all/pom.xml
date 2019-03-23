@@ -74,7 +74,7 @@
                         <configuration>
                             <finalName>${project.parent.artifactId}-${project.version}</finalName>
                             <shadedArtifactAttached>false</shadedArtifactAttached>
-                            <shadedClassifierName></shadedClassifierName>
+                            <shadedClassifierName/>
                             <artifactSet>
                                 <includes>
                                     <include>com.github.zhgzhg:ee-annotations</include>
@@ -95,7 +95,7 @@
                         <configuration>
                             <finalName>${project.parent.artifactId}-${project.version}-with-deps</finalName>
                             <shadedArtifactAttached>true</shadedArtifactAttached>
-                            <shadedClassifierName></shadedClassifierName>
+                            <shadedClassifierName/>
                         </configuration>
                     </execution>
 

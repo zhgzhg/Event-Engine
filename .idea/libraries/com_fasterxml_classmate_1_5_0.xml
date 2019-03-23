@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="com.fasterxml:classmate:1.5.0" type="repository">
+    <properties maven-id="com.fasterxml:classmate:1.5.0" />
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/fasterxml/classmate/1.5.0/classmate-1.5.0.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/com/fasterxml/classmate/1.5.0/classmate-1.5.0-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES />
+  </library>
+</component>
