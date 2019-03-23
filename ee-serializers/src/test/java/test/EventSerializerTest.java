@@ -171,7 +171,7 @@ public class EventSerializerTest {
     }
 
     @Test
-    void jsonEventSerializerDeserializationFromBadTextTest() throws Exception {
+    void jsonEventSerializerDeserializationFromBadTextTest() {
         Set<Class<? extends IEvent>> implementors = new HashSet<>();
         implementors.add(CustomEvent.class);
         implementors.add(CustomEvent2.class);
