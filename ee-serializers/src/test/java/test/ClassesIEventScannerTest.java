@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 
 //import java.net.URL;
 //import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -15,15 +15,23 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ClassesIEventScannerTest {
 
-    private HashSet<Class<? extends IEvent>> foundEventClasses = new HashSet<Class<? extends IEvent>>() {
-        private static final long serialVersionUID = 938705210137734396L;
-        {
-            add(Event.class);
-            add(DomainEvent.class);
-            add(SystemEvent.class);
-            add(EmergencyEvent.class);
-        }
-    };
+    private class SortedIEventClassSet extends TreeSet<Class<? extends IEvent>> {
+            private static final long serialVersionUID = -2301319647449135145L;
+            public SortedIEventClassSet() {
+                super(Comparator.comparing(Class::getCanonicalName));
+            }
+            public SortedIEventClassSet(Collection<Class<? extends IEvent>> c) {
+                this();
+                this.addAll(c);
+            }
+            public SortedIEventClassSet(SortedSet<Class<? extends IEvent>> s) {
+                this();
+                this.addAll(s);
+            }
+    }
+
+    private SortedIEventClassSet foundEventClasses = new SortedIEventClassSet(Arrays.asList(
+            Event.class, DomainEvent.class, SystemEvent.class, EmergencyEvent.class));
 
     /*private static String whereFrom(Object o) {
         if ( o == null ) {
@@ -67,8 +75,8 @@ public class ClassesIEventScannerTest {
         ClassesIEventScanner cis = new ClassesIEventScanner();
         assertTrue(cis.getFoundEventClasses().isEmpty());
         assertArrayEquals(new String[] { IEvent.class.getPackage().getName() }, cis.getPackagesToScan());
-        assertEquals(foundEventClasses, cis.scan());
-        assertEquals(foundEventClasses, cis.getFoundEventClasses());
+        assertEquals(foundEventClasses, new SortedIEventClassSet(cis.scan()));
+        assertEquals(foundEventClasses, new SortedIEventClassSet(cis.getFoundEventClasses()));
     }
 
     @Test
@@ -77,7 +85,7 @@ public class ClassesIEventScannerTest {
         assertTrue(cis.getFoundEventClasses().isEmpty());
         assertArrayEquals(new String[] { IEvent.class.getPackage().getName(), Event.class.getPackage().getName() },
             cis.getPackagesToScan());
-        assertEquals(foundEventClasses, cis.scan());
-        assertEquals(foundEventClasses, cis.getFoundEventClasses());
+        assertEquals(foundEventClasses, new SortedIEventClassSet(cis.scan()));
+        assertEquals(foundEventClasses, new SortedIEventClassSet(cis.getFoundEventClasses()));
     }
 }
