@@ -123,8 +123,8 @@ public class ClassesIEventScanner {
                             } catch (Exception ex) {
                                 ex.printStackTrace(System.err);
                             }
-                            foundEventClasses.add((Class<? extends IEvent>) clazz);
                         }
+                        foundEventClasses.add((Class<? extends IEvent>) clazz);
                     });
         }
 
