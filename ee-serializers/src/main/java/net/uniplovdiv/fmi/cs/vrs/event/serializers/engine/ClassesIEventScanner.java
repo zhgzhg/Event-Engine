@@ -28,8 +28,6 @@ public class ClassesIEventScanner {
                 .whitelistPackages(mainPackage)
                 .enableExternalClasses()
                 .enableAllInfo();
-                //.whitelistPackages()
-                //.matchClassesImplementing(IEvent.class, matchedClass -> foundEventClasses.add(matchedClass));
     }
 
     /**
@@ -52,7 +50,6 @@ public class ClassesIEventScanner {
                 .whitelistPackages(packagesToScan)
                 .enableExternalClasses()
                 .enableAllInfo();
-                //.matchClassesImplementing(IEvent.class, matchedClass -> foundEventClasses.add(matchedClass));
     }
 
     /**
@@ -78,50 +75,10 @@ public class ClassesIEventScanner {
                 .whitelistPackages(packages)
                 .enableExternalClasses()
                 .enableAllInfo();
-                //.matchClassesImplementing(IEvent.class, matchedClass -> foundEventClasses.add(matchedClass));
         if (classes != null && !classes.isEmpty()) {
             classes.forEach(c -> { if (c != null) this.foundEventClasses.add(c); } );
         }
     }
-
-    /* Not tested well enough
-     * Constructor specifying the class paths from which the classes to be scanned and the packages to be scanned for
-     * classes implementing {@link IEvent} interface plus {@link net.uniplovdiv.fmi.cs.vrs.event} package.
-     * @param classPathElements The class paths to be scanned. If null the default classpath will be used. For every of
-     *                          the provided elements method toString() will be used to determine the actual path.
-     * @param packages The Java packages to be scanned. If is set to null or empty array only the default package will
-     *                 be scanned.
-     *
-    public ClassesIEventScanner(Iterable<?> classPathElements, String... packages) {
-        foundEventClasses = new HashSet<>();
-        int packagesLength = 1 + (packages != null ? packages.length : 0);
-        packagesToScan = new String[packagesLength];
-        packagesToScan[0] = IEvent.class.getPackage().getName();
-        if (packages != null) {
-            for (int i = 0, j = 1; i < packages.length; ++i, ++j) {
-                packagesToScan[j] = packages[i];
-            }
-        }
-
-        FastClasspathScanner _fastClasspathScanner = new FastClasspathScanner(packagesToScan).verbose(true);
-        if (classPathElements != null) {
-            String classpath = "";
-            try {
-                classpath = System.getProperty("java.class.path");
-                if (classpath == null) classpath = "";
-            } catch (Exception ex) {
-                classpath = "";
-                ex.printStackTrace(System.err);
-            }
-            String[] classpathEntries = classpath.split(File.pathSeparator);
-            final HashSet<String> elements = new HashSet<>(Arrays.asList(classpathEntries));
-            classPathElements.forEach(c -> elements.add(c.toString()));
-
-            _fastClasspathScanner = _fastClasspathScanner.overrideClasspath(elements);
-        }
-        classGraphScanner = _fastClasspathScanner
-                .matchClassesImplementing(IEvent.class, matchedClass -> foundEventClasses.add(matchedClass));
-    }*/
 
     /**
      * Returns an array of the packages that will be scanned for classes implementing {@link IEvent} interface.
@@ -146,10 +103,29 @@ public class ClassesIEventScanner {
     @SuppressWarnings("unchecked")
     public Set<Class<? extends IEvent>> scan() {
         this.foundEventClasses.clear();
+        ClassLoader currentClassLoader = null;
+        try {
+            currentClassLoader = this.getClass().getClassLoader();
+        } catch (SecurityException e) {
+            e.printStackTrace(System.err);
+        }
+
         try (ScanResult results = this.classGraphScanner.scan()) {
+            final ClassLoader localClassLoader = currentClassLoader;
+
             results.getClassesImplementing(IEvent.class.getCanonicalName())
                     .loadClasses(true)
-                    .forEach(clazz -> foundEventClasses.add((Class<? extends IEvent>) clazz));
+                        // loaded by ClassGraph's class loader, so we must load them in our Applications's class loader
+                    .forEach(clazz -> {
+                        if (localClassLoader != null && localClassLoader != clazz.getClassLoader()) {
+                            try {
+                                clazz = localClassLoader.loadClass(clazz.getCanonicalName());
+                            } catch (Exception ex) {
+                                ex.printStackTrace(System.err);
+                            }
+                            foundEventClasses.add((Class<? extends IEvent>) clazz);
+                        }
+                    });
         }
 
         return this.foundEventClasses;
