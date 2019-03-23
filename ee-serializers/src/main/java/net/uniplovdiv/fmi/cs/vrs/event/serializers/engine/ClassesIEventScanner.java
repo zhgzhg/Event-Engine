@@ -132,11 +132,19 @@ public class ClassesIEventScanner {
     }
 
     /**
+     * Returns the found set of classes implementing {@link IEvent} interface.
+     * @return On success nonempty set otherwise an empty one.
+     */
+    public Set<Class<? extends IEvent>> getFoundEventClasses() {
+        return foundEventClasses;
+    }
+
+    /**
      * Scans the packages and returns the classes that implement {@link IEvent} interface.
      * @return On success nonempty set of data otherwise an empty one.
      */
     @SuppressWarnings("unchecked")
-    public HashSet<Class<? extends IEvent>> scan() {
+    public Set<Class<? extends IEvent>> scan() {
         this.foundEventClasses.clear();
         try (ScanResult results = this.classGraphScanner.scan()) {
             results.getClassesImplementing(IEvent.class.getCanonicalName())
@@ -145,13 +153,5 @@ public class ClassesIEventScanner {
         }
 
         return this.foundEventClasses;
-    }
-
-    /**
-     * Returns the found set of classes implementing {@link IEvent} interface.
-     * @return On success nonempty set otherwise an empty one.
-     */
-    public HashSet<Class<? extends IEvent>> getFoundEventClasses() {
-        return foundEventClasses;
     }
 }

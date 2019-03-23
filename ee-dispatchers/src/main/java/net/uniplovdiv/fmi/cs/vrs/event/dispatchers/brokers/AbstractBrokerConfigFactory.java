@@ -132,7 +132,7 @@ public abstract class AbstractBrokerConfigFactory<T, R> extends AbstractDispatch
         if ((topics == null && this.dispatchingType.equals(DispatchingType.CONSUME))
                 || !this.dispatchingType.equals(DispatchingType.CONSUME)) {
             ClassesIEventScanner ces = new ClassesIEventScanner(Event.class.getPackage().getName());
-            HashSet<Class<? extends IEvent>> scanned = ces.scan();
+            Set<Class<? extends IEvent>> scanned = ces.scan();
             for (Class<? extends IEvent> cls : scanned) {
                 Class<?> _cls = cls;
                 do {

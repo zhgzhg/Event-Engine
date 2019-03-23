@@ -282,7 +282,7 @@ public class EventDispatcherKafka extends AbstractEventDispatcher {
             this.consumer = null;
         }
         if (this.producer != null) {
-            this.producer.close(60, TimeUnit.SECONDS);
+            this.producer.close(Duration.ofSeconds(60));
             this.producer = null;
         }
     }

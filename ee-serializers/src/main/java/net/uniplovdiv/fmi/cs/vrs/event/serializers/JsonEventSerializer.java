@@ -525,7 +525,7 @@ public class JsonEventSerializer implements IEventSerializer {
                 getClassFullName(ParametersComparisonResult.class));
 
         this.packageScanner = new ClassesIEventScanner();
-        HashSet<Class<? extends IEvent>> iEventImplementors = packageScanner.scan();
+        Set<Class<? extends IEvent>> iEventImplementors = packageScanner.scan();
         for (Class<? extends IEvent> implementor : iEventImplementors) {
             this.iEventRuntimeTypeAdapterFactory.registerSubtype(implementor, getClassFullName(implementor));
         }
@@ -562,7 +562,7 @@ public class JsonEventSerializer implements IEventSerializer {
     public JsonEventSerializer(String... packagesWithEvents) {
         this();
         this.packageScanner = new ClassesIEventScanner(packagesWithEvents);
-        HashSet<Class<? extends IEvent>> iEventImplementors = this.packageScanner.scan();
+        Set<Class<? extends IEvent>> iEventImplementors = this.packageScanner.scan();
         for (Class<? extends IEvent> implementor : iEventImplementors) {
             this.iEventRuntimeTypeAdapterFactory.registerSubtype(implementor, getClassFullName(implementor));
         }
@@ -588,7 +588,7 @@ public class JsonEventSerializer implements IEventSerializer {
         this();
         this.encoding = encoding;
         this.packageScanner = new ClassesIEventScanner(packagesWithEvents);
-        HashSet<Class<? extends IEvent>> iEventImplementors = this.packageScanner.scan();
+        Set<Class<? extends IEvent>> iEventImplementors = this.packageScanner.scan();
         if (classesImplementingEvents != null) {
             iEventImplementors.addAll(classesImplementingEvents);
         }
