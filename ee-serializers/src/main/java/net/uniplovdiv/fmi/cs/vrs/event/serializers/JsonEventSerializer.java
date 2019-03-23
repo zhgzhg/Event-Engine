@@ -2,9 +2,6 @@ package net.uniplovdiv.fmi.cs.vrs.event.serializers;
 
 import com.google.gson.*;
 
-import net.uniplovdiv.fmi.cs.vrs.event.*;
-import net.uniplovdiv.fmi.cs.vrs.event.parameters.*;
-import net.uniplovdiv.fmi.cs.vrs.event.parameters.comparison.*;
 import net.uniplovdiv.fmi.cs.vrs.event.Event;
 import net.uniplovdiv.fmi.cs.vrs.event.IEvent;
 import net.uniplovdiv.fmi.cs.vrs.event.parameters.EventsContainer;
@@ -22,7 +19,6 @@ import java.lang.instrument.IllegalClassFormatException;
 import java.lang.reflect.Type;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -377,8 +373,7 @@ public class JsonEventSerializer implements IEventSerializer {
         }
 
         @Override
-        public IEvent deserialize(JsonElement jsonElement, Type typeOfT, JsonDeserializationContext context)
-                throws JsonParseException {
+        public IEvent deserialize(JsonElement jsonElement, Type typeOfT, JsonDeserializationContext context) {
             IEvent event = null;
             JsonObject object = jsonElement.getAsJsonObject();
             if (object.has(CLASS_META_KEY)) {
@@ -708,7 +703,7 @@ public class JsonEventSerializer implements IEventSerializer {
      * @throws SecurityException If untrusted subclass illegally overrides security-sensitive methods
      * @throws NullPointerException If serializedEvent is null
      */
-    private <T> byte[] _serialize(T object) throws IOException, SecurityException, NullPointerException {
+    private <T> byte[] _serialize(T object) throws IOException {
         try {
             return this.gson.toJson(object).getBytes(this.encoding);
         } catch (RuntimeException ex) {
@@ -724,7 +719,7 @@ public class JsonEventSerializer implements IEventSerializer {
     }
 
     @Override
-    public byte[] serialize(IEvent event) throws IOException, SecurityException, NullPointerException {
+    public byte[] serialize(IEvent event) throws IOException {
         try {
             return this._serialize(event);
         } catch (IOException ex) {
@@ -734,14 +729,12 @@ public class JsonEventSerializer implements IEventSerializer {
     }
 
     @Override
-    public byte[] serializePCO(IParameterComparisonOutcome comparisonOutcome) throws IOException, SecurityException,
-            NullPointerException {
+    public byte[] serializePCO(IParameterComparisonOutcome comparisonOutcome) throws IOException {
         return this._serialize(comparisonOutcome);
     }
 
     @Override
-    public byte[] serializePCOT(ParameterComparisonOutcomeTemplate comparisonOutcomeTemplate) throws IOException,
-            SecurityException, NullPointerException {
+    public byte[] serializePCOT(ParameterComparisonOutcomeTemplate comparisonOutcomeTemplate) throws IOException {
         return this._serialize(comparisonOutcomeTemplate);
     }
 
@@ -758,8 +751,7 @@ public class JsonEventSerializer implements IEventSerializer {
      * @throws ClassNotFoundException If the resulting of the deserialization object cannot be instantiated, because
      *                                its class is not found in the system.
      */
-    private <R> R _deserialize(byte[] serializedData, Class<? extends R> representative) throws IOException,
-            SecurityException, NullPointerException, ClassNotFoundException {
+    private <R> R _deserialize(byte[] serializedData, Class<? extends R> representative) throws IOException {
         try {
             return this.gson.fromJson(new String(serializedData, this.encoding), representative);
         } catch (RuntimeException ex) {
@@ -786,8 +778,7 @@ public class JsonEventSerializer implements IEventSerializer {
      * @throws ClassNotFoundException If the resulting of the deserialization object cannot be instantiated, because
      *                                its class is not found in the system.
      */
-    public IEvent deserialize(byte[] serializedEvent, Class<? extends IEvent> representative) throws IOException,
-            SecurityException, NullPointerException, ClassNotFoundException {
+    public IEvent deserialize(byte[] serializedEvent, Class<? extends IEvent> representative) throws IOException {
         try {
             return this._deserialize(serializedEvent, representative);
         } catch (Exception e) {
@@ -808,22 +799,22 @@ public class JsonEventSerializer implements IEventSerializer {
      * @throws SecurityException If untrusted subclass illegally overrides security-sensitive methods
      * @throws NullPointerException If serializedEvent or the encoding is null
      * @throws JsonSyntaxException If the conversion to JSON format fails
+     * @throws ClassNotFoundException If the resulting of the deserialization object cannot be instantiated, because
+     *                                its class is not found in the system.
      */
     @Override
-    public IEvent deserialize(byte[] serializedEvent) throws IOException, SecurityException, NullPointerException,
-            ClassNotFoundException {
+    public IEvent deserialize(byte[] serializedEvent) throws IOException {
         return this.deserialize(serializedEvent, IEvent.class);
     }
 
     @Override
-    public IParameterComparisonOutcome deserializePCO(byte[] serializedComparisonOutcome) throws IOException,
-            SecurityException, NullPointerException, ClassNotFoundException {
+    public IParameterComparisonOutcome deserializePCO(byte[] serializedComparisonOutcome) throws IOException {
         return this._deserialize(serializedComparisonOutcome, IParameterComparisonOutcome.class);
     }
 
     @Override
     public ParameterComparisonOutcomeTemplate deserializePCOT(byte[] serializedComparisonOutcomeTemplate) throws
-            IOException, SecurityException, NullPointerException, ClassNotFoundException {
+            IOException {
         return this._deserialize(serializedComparisonOutcomeTemplate, ParameterComparisonOutcomeTemplate.class);
     }
 }
