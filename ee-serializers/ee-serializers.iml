@@ -24,7 +24,7 @@
     <orderEntry type="library" scope="TEST" name="org.apiguardian:apiguardian-api:1.0.0" level="project" />
     <orderEntry type="library" exported="" name="commons-codec:commons-codec:1.12" level="project" />
     <orderEntry type="library" scope="TEST" name="org.junit.jupiter:junit-jupiter-api:5.4.1" level="project" />
-    <orderEntry type="library" exported="" name="io.github.classgraph:classgraph:4.8.20" level="project" />
+    <orderEntry type="library" exported="" name="io.github.classgraph:classgraph:4.8.21" level="project" />
     <orderEntry type="module" module-name="ee-annotations" />
     <orderEntry type="module" module-name="ee-events" />
     <orderEntry type="library" name="Maven: com.fasterxml:classmate:1.5.0" level="project" />
