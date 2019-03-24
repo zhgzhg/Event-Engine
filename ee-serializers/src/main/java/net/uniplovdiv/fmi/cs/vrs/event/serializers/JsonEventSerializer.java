@@ -745,11 +745,10 @@ public class JsonEventSerializer implements IEventSerializer {
      * @param representative The class object of the class that will be used to represent the deserialized data.
      * @return An initialized object.
      * @throws java.io.StreamCorruptedException If the provided data cannot form a stream header that is correct
-     * @throws IOException If an I/O error occurs while reading stream header
+     * @throws IOException If an I/O error occurs while reading stream header or if the resulting of the deserialization
+     *                     object cannot be instantiated, because its class is not found in the system
      * @throws SecurityException If untrusted subclass illegally overrides security-sensitive methods
      * @throws NullPointerException If serializedEvent is null
-     * @throws ClassNotFoundException If the resulting of the deserialization object cannot be instantiated, because
-     *                                its class is not found in the system.
      */
     private <R> R _deserialize(byte[] serializedData, Class<? extends R> representative) throws IOException {
         try {
@@ -772,11 +771,10 @@ public class JsonEventSerializer implements IEventSerializer {
      * @param representative The class object of the class that will be used to represent the deserialized data.
      * @return An initialized object implementing IEvent.
      * @throws java.io.StreamCorruptedException If the provided data cannot form a stream header that is correct
-     * @throws IOException If an I/O error occurs while reading stream header
+     * @throws IOException If an I/O error occurs while reading stream header or if the resulting of the deserialization
+     *                     object cannot be instantiated, because its class is not found in the system
      * @throws SecurityException If untrusted subclass illegally overrides security-sensitive methods
      * @throws NullPointerException If serializedEvent is null
-     * @throws ClassNotFoundException If the resulting of the deserialization object cannot be instantiated, because
-     *                                its class is not found in the system.
      */
     public IEvent deserialize(byte[] serializedEvent, Class<? extends IEvent> representative) throws IOException {
         try {
@@ -795,12 +793,11 @@ public class JsonEventSerializer implements IEventSerializer {
      * this method.
      * @param serializedEvent The serialized IEvent which will be converted to an actual object.
      * @return Event instance with the initialized data.
-     * @throws IOException If an I/O error occurs while writing stream header
+     * @throws IOException If an I/O error occurs while reading stream header or if the resulting of the deserialization
+     *                     object cannot be instantiated, because its class is not found in the system
      * @throws SecurityException If untrusted subclass illegally overrides security-sensitive methods
      * @throws NullPointerException If serializedEvent or the encoding is null
      * @throws JsonSyntaxException If the conversion to JSON format fails
-     * @throws ClassNotFoundException If the resulting of the deserialization object cannot be instantiated, because
-     *                                its class is not found in the system.
      */
     @Override
     public IEvent deserialize(byte[] serializedEvent) throws IOException {
