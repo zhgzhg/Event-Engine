@@ -12,10 +12,10 @@ What's Provided
 
 The project implements several modules with the following purpose:
 
-* Events - structural representation of a complex events. Provides initialisation and computation mechanisms for them
-* Annotations - used to define new event structures and validate them during compilation if annotation processing is enabled. The module is required by the 'Events' one
+* Events - structural representation of complex events. Provides initialisation and computation mechanisms for them.
+* Annotations - used to define new event structures and validate them during compilation if annotation processing is enabled. The module is required by the 'Events' one.
 * Serializers - serialisation and encoding mechanisms for events (like for e.g. JSON ;; BASE32 ;; etc.)
-* Dispatchers - uniform, high-level implementation for distribution of events based on broker systems like ActiveMQ or Kafka
+* Dispatchers - uniform, high-level implementation for distribution of events based on broker systems like ActiveMQ or Kafka.
 
 
 Requirements
@@ -30,14 +30,14 @@ How to Compile
 
 ### For Java 8:
 * With IntelliJ IDEA: 
-    * Open the project and build it using the gui options.
+    * Open the project and build it using the GUI menu.
 * With Maven:
     * Execute `mvn clean install -P java8`
 
 ### For Java 9+ - beta, limited modularization:
 * With IntelliJ IDEA:
     * Open the project.
-    * In project's settings specify Project JDK to be JDK9 
+    * In project's settings specify Project JDK to be JDK9 or later
     * For every module copy the file module-info.java inside its java directory.
 
 * With Maven:
@@ -58,7 +58,7 @@ generated jars instead!
  
 Pay attention to IntelliJ IDEA settings if you are using Maven to build the project. Especially when changing JDK
 version during imports and runs. The environment variable JAVA_HOME might be mandatory to set if you have several
-JDK versions, in order to make sure that maven javadoc plugin is using the correct JRE (see below).
+JDK versions, in order to guarantee that maven javadoc plugin is using the correct JRE (see below).
 
 Event Engine relies on not modularized yet dependencies. Migrating to Java 9+ may cause problems.
 Compilation for Java 9+ with Maven will succeed, but the javadoc generation might fail.
