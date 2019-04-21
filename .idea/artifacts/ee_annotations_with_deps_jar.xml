@@ -3,7 +3,7 @@
     <output-path>$PROJECT_DIR$/out/artifacts/ee_annotations_with_deps_jar</output-path>
     <root id="archive" name="ee-annotations-with-deps.jar">
       <element id="module-output" name="ee-annotations" />
-      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/apache/commons/commons-lang3/3.8.1/commons-lang3-3.8.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/apache/commons/commons-lang3/3.9/commons-lang3-3.9.jar" path-in-jar="/" />
     </root>
   </artifact>
 </component>

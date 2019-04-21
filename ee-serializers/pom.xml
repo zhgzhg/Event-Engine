@@ -5,7 +5,7 @@
     <parent>
         <groupId>com.github.zhgzhg</groupId>
         <artifactId>event-engine</artifactId>
-        <version>0.2.3</version>
+        <version>0.2.4</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -14,7 +14,7 @@
     <description>Provides serializers and deserializers for VRS events.</description>
 
     <artifactId>ee-serializers</artifactId>
-    <version>0.2.3</version>
+    <version>0.2.4</version>
 
     <dependencies>
         <dependency>
