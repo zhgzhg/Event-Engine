@@ -55,7 +55,7 @@
         <ee-events-version>0.2.5</ee-events-version>
         <ee-serializers-version>0.2.5</ee-serializers-version>
 
-        <ee-j9p-workarounds-version>0.2.0</ee-j9p-workarounds-version>
+        <ee-j9p-workarounds-version>0.2.1</ee-j9p-workarounds-version>
 
         <commons-lang3-version>3.9</commons-lang3-version>
         <commons-codec-version>1.12</commons-codec-version>
