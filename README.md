@@ -1,10 +1,12 @@
 Event Engine
 ============
-
-![build status badge](https://travis-ci.org/zhgzhg/Event-Engine.svg?branch=master "Build Status") [ ![Download](https://api.bintray.com/packages/zhgzhg/Event-Engine/Event-Engine/images/download.svg "Download Event Engine") ](https://bintray.com/zhgzhg/Event-Engine/Event-Engine/0.2.4) 
+<img alt="Event Engine Logo" src="https://raw.githubusercontent.com/zhgzhg/Event-Engine/master/logo.svg?sanitize=true" height="160" width="160" />
 
 An event engine developed for the Virtual Referent Space (VRS).
 The project is licensed under Apache License 2.0. You may find the terms in file named "LICENSE" in this directory.
+
+![build status badge](https://travis-ci.org/zhgzhg/Event-Engine.svg?branch=master "Build Status")
+[ ![Download](https://api.bintray.com/packages/zhgzhg/Event-Engine/Event-Engine/images/download.svg "Download Event Engine") ](https://bintray.com/zhgzhg/Event-Engine/Event-Engine/0.2.5)
 
 
 What's Provided
@@ -47,7 +49,8 @@ How to Use
 ----------
  
 At this point the examples are extremely limited, so please refer to the java documentation and the unit tests.
-You can also examine the [test examples](https://github.com/zhgzhg/Event-Engine-JADE/tree/master/src/test/java/test/pseudo "pseudo test client agent") of [Event Engine for JADE](https://github.com/zhgzhg/Event-Engine-JADE "Event Engine for JADE") project.
+You can also examine the [test examples](https://github.com/zhgzhg/Event-Engine-JADE/tree/master/src/test/java/test/pseudo "pseudo test client agent")
+of [Event Engine for JADE](https://github.com/zhgzhg/Event-Engine-JADE "Event Engine for JADE") project.
  
  
 Known Issues

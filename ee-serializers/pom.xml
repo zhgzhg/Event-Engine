@@ -12,9 +12,14 @@
 
     <name>Event Engine's Serializers</name>
     <description>Provides serializers and deserializers for VRS events.</description>
-
     <artifactId>ee-serializers</artifactId>
     <version>0.2.5</version>
+
+    <scm>
+        <connection>scm:git:git@github.com:zhgzhg/Event-Engine.git</connection>
+        <developerConnection>scm:git:git@github.com:zhgzhg/Event-Engine.git</developerConnection>
+        <url>https://github.com/zhgzhg/Event-Engine.git</url>
+    </scm>
 
     <dependencies>
         <dependency>

@@ -12,9 +12,14 @@
 
     <name>Event Engine's All Dependencies Aggregator</name>
     <description>Contains all of the Event Engine's modules.</description>
-
     <artifactId>ee-all</artifactId>
     <version>0.2.5</version>
+
+    <scm>
+        <connection>scm:git:git@github.com:zhgzhg/Event-Engine.git</connection>
+        <developerConnection>scm:git:git@github.com:zhgzhg/Event-Engine.git</developerConnection>
+        <url>https://github.com/zhgzhg/Event-Engine.git</url>
+    </scm>
 
     <dependencies>
         <dependency>

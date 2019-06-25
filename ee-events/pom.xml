@@ -12,9 +12,14 @@
 
     <name>Event Engine's Events</name>
     <description>Provides the classes required to create and work with VRS events while also defines some basic ones.</description>
-
     <artifactId>ee-events</artifactId>
     <version>0.2.5</version>
+
+    <scm>
+        <connection>scm:git:git@github.com:zhgzhg/Event-Engine.git</connection>
+        <developerConnection>scm:git:git@github.com:zhgzhg/Event-Engine.git</developerConnection>
+        <url>https://github.com/zhgzhg/Event-Engine.git</url>
+    </scm>
 
     <dependencies>
         <dependency>

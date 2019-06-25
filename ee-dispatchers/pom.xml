@@ -12,9 +12,14 @@
 
     <name>Event Engine's Dispatchers</name>
     <description>Provides the dispatchers that can send and receive VRS events.</description>
-
     <artifactId>ee-dispatchers</artifactId>
     <version>0.2.5</version>
+
+    <scm>
+        <connection>scm:git:git@github.com:zhgzhg/Event-Engine.git</connection>
+        <developerConnection>scm:git:git@github.com:zhgzhg/Event-Engine.git</developerConnection>
+        <url>https://github.com/zhgzhg/Event-Engine.git</url>
+    </scm>
 
     <dependencies>
         <dependency>
