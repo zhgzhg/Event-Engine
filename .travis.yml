@@ -5,12 +5,9 @@ cache:
   - $HOME/.m2
 jdk:
   - oraclejdk8
-  - oraclejdk9
   - oraclejdk11
 #  - oraclejdk-ea
   - openjdk8
-  - openjdk9
-  - openjdk10
   - openjdk11
   - openjdk12
   - openjdk-ea
