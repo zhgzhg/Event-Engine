@@ -6,4 +6,5 @@ cache:
 jdk:
   - openjdk8
   - openjdk11
+  - openjdk13
   - openjdk-ea
