@@ -7,7 +7,7 @@ module net.uniplovdiv.fmi.cs.vrs.event.serializers {
     requires org.apache.commons.lang3;
     requires org.apache.commons.codec;
     requires io.github.classgraph;
-    requires gson;
+    requires com.google.gson;
 
     requires net.uniplovdiv.fmi.cs.vrs.event;
 

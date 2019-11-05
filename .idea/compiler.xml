@@ -24,12 +24,12 @@
           <entry name="$PROJECT_DIR$/ee-annotations/pom.xml" />
           <entry name="$MAVEN_REPOSITORY$/org/apache/commons/commons-lang3/3.7/commons-lang3-3.7.jar" />
         </processorPath>
-        <module name="event-annotations" />
+        <module name="event-dispatchers" />
         <module name="annotations" />
         <module name="event-serializers" />
         <module name="serializers" />
         <module name="dispatchers" />
-        <module name="event-dispatchers" />
+        <module name="event-annotations" />
         <module name="ee-all" />
         <module name="events" />
         <module name="event-events" />
@@ -42,9 +42,9 @@
           <entry name="$PROJECT_DIR$/ee-annotations/target/classes" />
           <entry name="$MAVEN_REPOSITORY$/org/apache/commons/commons-lang3/3.9/commons-lang3-3.9.jar" />
         </processorPath>
+        <module name="ee-events" />
         <module name="ee-dispatchers" />
         <module name="ee-serializers" />
-        <module name="ee-events" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel target="1.8">
