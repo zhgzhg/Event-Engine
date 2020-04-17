@@ -3,10 +3,10 @@
     <output-path>$PROJECT_DIR$/out/artifacts/ee_serializers_with_deps_jar</output-path>
     <root id="archive" name="ee-serializers-with-deps.jar">
       <element id="module-output" name="ee-serializers" />
-      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/apache/commons/commons-lang3/3.9/commons-lang3-3.9.jar" path-in-jar="/" />
-      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/commons-codec/commons-codec/1.13/commons-codec-1.13.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/google/code/gson/gson/2.8.6/gson-2.8.6.jar" path-in-jar="/" />
-      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/io/github/classgraph/classgraph/4.8.53/classgraph-4.8.53.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/apache/commons/commons-lang3/3.10/commons-lang3-3.10.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/commons-codec/commons-codec/1.14/commons-codec-1.14.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/io/github/classgraph/classgraph/4.8.70/classgraph-4.8.70.jar" path-in-jar="/" />
     </root>
   </artifact>
 </component>

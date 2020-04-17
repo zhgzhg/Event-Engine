@@ -1,0 +1,20 @@
+<component name="libraryTable">
+  <library name="org.apache.kafka:kafka-clients:2.5.0" type="repository">
+    <properties maven-id="org.apache.kafka:kafka-clients:2.5.0" />
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/apache/kafka/kafka-clients/2.5.0/kafka-clients-2.5.0.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/com/github/luben/zstd-jni/1.4.4-7/zstd-jni-1.4.4-7.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/org/lz4/lz4-java/1.7.1/lz4-java-1.7.1.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/org/xerial/snappy/snappy-java/1.1.7.3/snappy-java-1.1.7.3.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/org/slf4j/slf4j-api/1.7.30/slf4j-api-1.7.30.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/org/apache/kafka/kafka-clients/2.5.0/kafka-clients-2.5.0-javadoc.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/com/github/luben/zstd-jni/1.4.4-7/zstd-jni-1.4.4-7-javadoc.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/org/lz4/lz4-java/1.7.1/lz4-java-1.7.1-javadoc.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/org/xerial/snappy/snappy-java/1.1.7.3/snappy-java-1.1.7.3-javadoc.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/org/slf4j/slf4j-api/1.7.30/slf4j-api-1.7.30-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES />
+  </library>
+</component>

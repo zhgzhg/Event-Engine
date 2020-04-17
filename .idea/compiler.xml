@@ -24,7 +24,7 @@
           <entry name="$PROJECT_DIR$/ee-annotations/pom.xml" />
           <entry name="$MAVEN_REPOSITORY$/org/apache/commons/commons-lang3/3.7/commons-lang3-3.7.jar" />
         </processorPath>
-        <module name="event-dispatchers" />
+        <module name="event-events" />
         <module name="annotations" />
         <module name="event-serializers" />
         <module name="serializers" />
@@ -32,7 +32,7 @@
         <module name="event-annotations" />
         <module name="ee-all" />
         <module name="events" />
-        <module name="event-events" />
+        <module name="event-dispatchers" />
       </profile>
       <profile name="Annotation profile for Event Engine" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
@@ -40,14 +40,14 @@
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="false">
           <entry name="$PROJECT_DIR$/ee-annotations/target/classes" />
-          <entry name="$MAVEN_REPOSITORY$/org/apache/commons/commons-lang3/3.9/commons-lang3-3.9.jar" />
+          <entry name="$MAVEN_REPOSITORY$/org/apache/commons/commons-lang3/3.10/commons-lang3-3.10.jar" />
         </processorPath>
         <module name="ee-events" />
         <module name="ee-dispatchers" />
         <module name="ee-serializers" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel target="1.8">
+    <bytecodeTargetLevel target="8">
       <module name="ee-all" target="1.8" />
       <module name="ee-annotations" target="1.8" />
       <module name="ee-dispatchers" target="1.8" />

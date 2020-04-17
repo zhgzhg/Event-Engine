@@ -3,10 +3,20 @@
   <component name="Encoding">
     <file url="file://$PROJECT_DIR$" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/ee-all" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/ee-all/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/ee-all/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/ee-annotations" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/ee-annotations/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/ee-annotations/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/ee-dispatchers" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/ee-dispatchers/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/ee-dispatchers/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/ee-events" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/ee-events/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/ee-events/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/ee-serializers" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/ee-serializers/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/ee-serializers/src/main/resources" charset="UTF-8" />
     <file url="PROJECT" charset="UTF-8" />
   </component>
 </project>
