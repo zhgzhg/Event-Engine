@@ -41,7 +41,6 @@
         <processorPath useClasspath="false">
           <entry name="$PROJECT_DIR$/ee-annotations/target/classes" />
           <entry name="$MAVEN_REPOSITORY$/org/apache/commons/commons-lang3/3.11/commons-lang3-3.11.jar" />
-          <entry name="$MAVEN_REPOSITORY$/org/apache/commons/commons-lang3/3.10/commons-lang3-3.10.jar" />
         </processorPath>
         <module name="ee-events" />
         <module name="ee-dispatchers" />
