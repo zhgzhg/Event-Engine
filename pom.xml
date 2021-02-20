@@ -313,7 +313,7 @@
                     </configuration>
                     <executions>
                         <execution>
-                            <phase>package</phase>
+                            <phase>none</phase> <!-- package -->
                             <goals>
                                 <goal>shade</goal>
                             </goals>
