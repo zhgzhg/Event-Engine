@@ -38,8 +38,8 @@
 
     <repositories>
         <repository>
-            <id>bintray-zhgzhg-Event-Engine</id>
-            <name>bintray</name>
+            <id>github-zhgzhg-Event-Engine</id>
+            <name>github</name>
             <url>https://maven.pkg.github.com/zhgzhg/Event-Engine</url>
         </repository>
     </repositories>
