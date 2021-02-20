@@ -3,6 +3,8 @@ dist: bionic
 cache:
   directories:
     - $HOME/.m2
+before_install:
+  - cp -f settings.xml $HOME/.m2
 jdk:
   - openjdk8
   - openjdk11
